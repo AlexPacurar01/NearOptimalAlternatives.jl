@@ -4,6 +4,7 @@ using JuMP
 using LinearAlgebra
 using SparseArrays
 using Optim
+using NLSolversBase
 
 export run_lbfgs_mga, extract_all_constraints, operational_recovery!
 
@@ -84,17 +85,19 @@ Locks the capacities found by L-BFGS and runs the LP to fix the dispatch physics
 function operational_recovery!(
     model::Model,
     lazy_solution::Vector{Float64},
-    vars::Vector{VariableRef},
     is_structural_mask::BitVector,
 )
+
+    copy = JuMP.copy_model(model)
+    vars = all_variables(copy)
     for i = 1:length(vars)
         if is_structural_mask[i]
             fix(vars[i], lazy_solution[i]; force = true)
         end
     end
 
-    set_silent(model)
-    optimize!(model)
+    set_silent(copy)
+    optimize!(copy)
     recovered_solution = value.(vars)
 
     for i = 1:length(vars)
@@ -109,21 +112,37 @@ end
     run_lbfgs_mga(...)
 Uses L-BFGS to maximize distance from a known point subject to soft constraint penalties.
 """
-function run_lbfgs_mga(model::Model, x_known::Vector{Float64})
-    vars = all_variables(model)
+function run_lbfgs_mga(
+    model::Model,
+    x_start::Vector{Float64},
+    eps::Float64 = 0.5,
+    w::Vector{Float64} = zeros(length(x_start)),
+)
+
+    # Include MGA Cost Constraint: Only allow solutions within (1+eps) of the optimal cost (copy to ensure correct objective function reference is used)
+    min_cost = objective_value(model)
+    max_allowed_cost = (1 + eps) * min_cost
+
+    new_model, ref_map = JuMP.copy_model(model)
+    vars = all_variables(new_model)
+    new_cost_expr = objective_function(new_model)
+    @constraint(new_model, mga_cost_limit, new_cost_expr <= max_allowed_cost)
 
     # Feature Space Mask (Identify Structural Variables)
-    is_structural = BitVector(
-        occursin("investment", string(name(v))) || occursin("capacity", string(name(v))) for v in vars
-    )
+    # is_structural = BitVector(
+    #     occursin("investment", string(name(v))) || occursin("capacity", string(name(v))) for v in vars
+    # )
+    is_structural = BitVector(1 for v in vars) # For testing, treat all variables as structural
     mask_float = Float64.(is_structural) # Used for fast gradient math
 
-    A_in, b_in, A_eq, b_eq = extract_all_constraints(model, vars)
+    A_in, b_in, A_eq, b_eq = extract_all_constraints(new_model, vars)
 
     # Penalty hyper-parameters (You may need to tune these! If the final recovered cost
     # is too high, increase rho. If L-BFGS fails to move, decrease rho.)
-    rho = 1e4  # Inequality penalty weight
-    mu = 1e4   # Equality penalty weight
+    rho = 1000  # Inequality penalty weight
+    mu = 1000   # Equality penalty weight
+
+    w = w ./ norm(w) # Normalize feature weights just in case
 
     # Optim.jl requires a combined function for performance (calculates Loss and Grad together)
     function fg!(F, G, x)
@@ -134,43 +153,46 @@ function run_lbfgs_mga(model::Model, x_known::Vector{Float64})
         # 2. Equality Violations
         viol_eq = (A_eq * x) .- b_eq
 
-        # 3. Objective (Distance)
-        struct_diff = (x .- x_known) .* mask_float
-
         if G !== nothing
             # Gradient: -2*Distance + rho*(A_in^T * viol_in_pos) + mu*(A_eq^T * viol_eq)
-            grad_dist = -2.0 .* struct_diff
+            # grad_dist = -2.0 .* sum((x .- x_known) for x_known in previous_solutions)
+            grad_dist = w
             grad_in = rho .* (A_in' * viol_in_pos)
             grad_eq = mu .* (A_eq' * viol_eq)
 
             G .= grad_dist .+ grad_in .+ grad_eq
+            # G .= w .+ grad_in .+ grad_eq # Apply feature weights
         end
 
         if F !== nothing
             # Loss: -Distance^2 + (rho/2)*viol_in_pos^2 + (mu/2)*viol_eq^2
-            loss_dist = -sum(struct_diff .^ 2)
+            # loss_objecive = -sum(sum((x .- x_known) .^ 2) for x_known in previous_solutions)
+            loss_objective = dot(w, x)
             loss_in = (rho / 2.0) * sum(viol_in_pos .^ 2)
             loss_eq = (mu / 2.0) * sum(viol_eq .^ 2)
 
-            return loss_dist + loss_in + loss_eq
+            return loss_objective + loss_in + loss_eq
         end
     end
 
     println("Starting L-BFGS search...")
     # Start L-BFGS slightly perturbed from x_known so the gradient isn't perfectly zero
-    x_start = x_known .+ (randn(length(x_known)) .* 0.01 .* mask_float)
+    x_start = x_start .+ 0.01 * randn(length(x_start))
+
 
     # Run the optimizer
     res = optimize(
-        Optim.only_fg!(fg!),
+        only_fg!(fg!),
         x_start,
         LBFGS(),
-        Optim.Options(iterations = 500, show_trace = true),
+        Optim.Options(iterations = 100, show_trace = false),
     )
     x_lbfgs = Optim.minimizer(res)
 
-    println("L-BFGS converged. Running Operational Recovery (Snap to Grid)...")
-    final_point = operational_recovery!(model, x_lbfgs, vars, is_structural)
+    # println("L-BFGS converged. Running Operational Recovery (Snap to Grid)...")
+    # final_point = operational_recovery!(model, x_lbfgs, vars, is_structural)
+    final_point = x_lbfgs
+
 
     return final_point
 end
