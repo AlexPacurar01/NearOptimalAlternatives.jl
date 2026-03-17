@@ -21,12 +21,13 @@ using Ipopt
     @variable(model, 1 <= x_2 <= 2)
     @objective(model, Min, x_1 + x_2)
     JuMP.optimize!(model)
+    println("Optimal Solution: ", JuMP.value.(JuMP.all_variables(model)))
 
     # ----------------------------------------------------------------
     # 2. EXECUTION
     # ----------------------------------------------------------------
 
-    alternatives = lbfgs_search_alternatives(model, 1)
+    alternatives = lbfgs_search_alternatives(model, 4)
 
     # ----------------------------------------------------------------
     # 3. VALIDATION
@@ -38,8 +39,8 @@ using Ipopt
 
     alternative = alternatives[1]
 
-    @test alternative[1] + alternative[2] >= 2.0 - 1e-4 # Should be near-optimal, not optimal
-    @test alternative[1] + alternative[2] <= 2.0 + 1e-4
+    @test alternative[1] >= 2.0 - 1e-4
+    @test alternative[2] >= 2.0 - 1e-4
 
     # The alternative should be different from the optimal solution
     # @test !isapprox(alternative[1], 1.0, atol = 1e-4) ||
@@ -69,11 +70,13 @@ end
     @objective(model, Min, x_1 + x_2)
     JuMP.optimize!(model)
 
+    println("Optimal Solution: ", JuMP.value.(JuMP.all_variables(model)))
+
     # ----------------------------------------------------------------
     # 2. EXECUTION
     # ----------------------------------------------------------------
 
-    alternatives = lbfgs_search_alternatives(model, 1)
+    alternatives = lbfgs_search_alternatives(model, 6)
 
     # ----------------------------------------------------------------
     # 3. VALIDATION
@@ -85,8 +88,7 @@ end
 
     alternative = alternatives[1]
 
-    @test alternative[1] + alternative[2] >= 2.0 - 1e-4 # Should be near-optimal, not optimal
-    @test alternative[1] + alternative[2] <= 2.0 + 1e-4
+    @test alternative[1] + alternative[2] + alternative[3] == 4.0
 
     # The alternative should be different from the optimal solution
     # @test !isapprox(alternative[1], 1.0, atol = 1e-4) ||

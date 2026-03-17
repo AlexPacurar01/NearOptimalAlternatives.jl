@@ -341,20 +341,53 @@ function run_alternative_generating_problem!(problem::MetaheuristicProblem)
     return result
 end
 
-function lbfgs_search_alternatives(model::JuMP.Model, n_alternatives::Int64)
-    # Get the optimal solution from the model
-    x_optimal = value.(all_variables(model))
+function lbfgs_search_alternatives(
+    model::JuMP.Model,
+    target_vars::Vector{JuMP.VariableRef},
+    n_alternatives::Int64,
+)
+    all_vars = all_variables(model)
+    x_optimal = value.(all_vars)
+    n_total_vars = length(x_optimal)
+
+    # Map target variables to global indices and fetch their upper bounds
+    target_indices = [findfirst(isequal(v), all_vars) for v in target_vars]
+    target_ubs = [upper_bound(v) for v in target_vars]
 
     alternatives = []
+
+    # x_current represents the solution we are currently evaluating to build penalties
     x_current = x_optimal
 
+    # Initialize the SPORES accumulating weights vector (starts at 0)
+    accumulated_weights = zeros(Float64, length(target_vars))
+
     for i = 1:n_alternatives
-        alternative = run_lbfgs_mga(model, x_current)
+        w = zeros(Float64, n_total_vars)
+
+        # 1. Accumulate penalties based on the previous solution
+        for (j, idx) in enumerate(target_indices)
+            # Match SPORES logic: weight += value / upper_bound
+            # This normalizes the penalty so variables with large capacities
+            # don't dominate variables with small capacities.
+            accumulated_weights[j] += x_current[idx] / target_ubs[j]
+
+            # Map the accumulated penalty back to the global weight vector
+            w[idx] = accumulated_weights[j]
+        end
+
+        # 2. Run L-BFGS
+        # We use w as the directional gradient. Since L-BFGS will try to minimize w^T * x,
+        # the high weights will force it away from previously used variables.
+        # We anchor the search to x_optimal to prevent drifting.
+        alternative = run_lbfgs_mga(model, x_optimal, 0.1, w)
+
         if !isnothing(alternative)
             push!(alternatives, alternative)
+            # Update x_current so the next iteration penalizes THIS new alternative
             x_current = alternative
         else
-            # If no alternative is found, we stop
+            # Stop if the L-BFGS solver fails to find a new point in the feasible space
             break
         end
     end
