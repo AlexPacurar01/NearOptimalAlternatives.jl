@@ -86,26 +86,64 @@ function operational_recovery!(
     model::Model,
     lazy_solution::Vector{Float64},
     is_structural_mask::BitVector,
+    max_allowed_cost::Float64,  # <--- NEW
+    optimizer_factory,
 )
+    recov_model, ref_map = JuMP.copy_model(model)
+    set_optimizer(recov_model, optimizer_factory)
 
-    copy = JuMP.copy_model(model)
-    vars = all_variables(copy)
-    for i = 1:length(vars)
+    # 1. ENFORCE THE BUDGET! This guarantees it passes your is_feasible check.
+    old_obj = objective_function(recov_model)
+    @constraint(recov_model, mga_strict_budget, old_obj <= max_allowed_cost)
+
+    original_vars = all_variables(model)
+
+    # 2. PROJECTION: Create variables to measure the "distance" from the L-BFGS guess
+    @variable(recov_model, abs_diff[1:length(original_vars)] >= 0)
+
+    for i = 1:length(original_vars)
         if is_structural_mask[i]
-            fix(vars[i], lazy_solution[i]; force = true)
+            target_var = ref_map[original_vars[i]]
+            # Clean up the L-BFGS guess (no negative capacities!)
+            target_val = max(0.0, lazy_solution[i])
+
+            # Formulate the absolute value difference: abs_diff = |target_var - target_val|
+            @constraint(recov_model, abs_diff[i] >= target_var - target_val)
+            @constraint(recov_model, abs_diff[i] >= target_val - target_var)
         end
     end
 
-    set_silent(copy)
-    optimize!(copy)
-    recovered_solution = value.(vars)
+    # 3. MINIMIZE THE DISTANCE: Force Gurobi to match L-BFGS as closely as physics allow
+    @objective(
+        recov_model,
+        Min,
+        sum(abs_diff[i] for i = 1:length(original_vars) if is_structural_mask[i])
+    )
 
-    for i = 1:length(vars)
-        if is_structural_mask[i]
-            unfix(vars[i])
-        end
+    set_silent(recov_model)
+    optimize!(recov_model)
+
+    if termination_status(recov_model) != MOI.OPTIMAL
+        @warn "Projection failed! L-BFGS guess was completely irrecoverable."
+        return nothing
     end
-    return recovered_solution
+
+    return JuMP.value.(all_variables(recov_model))
+end
+
+function repair_equalities(x_guess, A_eq, b_eq)
+    # 1. Calculate how much the equalities are violated
+    violation = A_eq * x_guess - b_eq
+
+    # 2. Solve for the Lagrange multipliers (lambda)
+    # We solve (A * A^T) * lambda = violation to avoid explicit matrix inversion
+    A_A_T = A_eq * A_eq'
+    lambda = A_A_T \ violation
+
+    # 3. Apply the gradient of the multipliers to repair the guess
+    x_repaired = x_guess - A_eq' * lambda
+
+    return x_repaired
 end
 
 """
@@ -115,8 +153,10 @@ Uses L-BFGS to maximize distance from a known point subject to soft constraint p
 function run_lbfgs_mga(
     model::Model,
     x_start::Vector{Float64},
-    eps::Float64 = 0.5,
+    eps::Float64 = 0.1,
     w::Vector{Float64} = zeros(length(x_start)),
+    max_allowed_cost::Float64 = Inf,
+    optimizer_search = nothing,
 )
 
     # Include MGA Cost Constraint: Only allow solutions within (1+eps) of the optimal cost (copy to ensure correct objective function reference is used)
@@ -129,18 +169,18 @@ function run_lbfgs_mga(
     @constraint(new_model, mga_cost_limit, new_cost_expr <= max_allowed_cost)
 
     # Feature Space Mask (Identify Structural Variables)
-    # is_structural = BitVector(
-    #     occursin("investment", string(name(v))) || occursin("capacity", string(name(v))) for v in vars
-    # )
-    is_structural = BitVector(1 for v in vars) # For testing, treat all variables as structural
+    is_structural = BitVector(
+        occursin("investment", string(name(v))) || occursin("capacity", string(name(v))) for v in vars
+    )
+    # is_structural = BitVector(1 for v in vars) # For testing, treat all variables as structural
     mask_float = Float64.(is_structural) # Used for fast gradient math
 
     A_in, b_in, A_eq, b_eq = extract_all_constraints(new_model, vars)
 
     # Penalty hyper-parameters (You may need to tune these! If the final recovered cost
     # is too high, increase rho. If L-BFGS fails to move, decrease rho.)
-    rho = 1000  # Inequality penalty weight
-    mu = 1000   # Equality penalty weight
+    rho = 10000  # Inequality penalty weight
+    mu = 1000000   # Equality penalty weight
 
     w = w ./ norm(w) # Normalize feature weights just in case
 
@@ -185,13 +225,20 @@ function run_lbfgs_mga(
         only_fg!(fg!),
         x_start,
         LBFGS(),
-        Optim.Options(iterations = 100, show_trace = false),
+        Optim.Options(iterations = 25, show_trace = false),
     )
     x_lbfgs = Optim.minimizer(res)
 
     # println("L-BFGS converged. Running Operational Recovery (Snap to Grid)...")
-    # final_point = operational_recovery!(model, x_lbfgs, vars, is_structural)
-    final_point = x_lbfgs
+    # final_point = operational_recovery!(
+    #     model,
+    #     x_lbfgs,
+    #     is_structural,
+    #     max_allowed_cost,
+    #     optimizer_search,
+    # )
+    # final_point = x_lbfgs
+    final_point = repair_equalities(x_lbfgs, A_eq, b_eq)
 
 
     return final_point
