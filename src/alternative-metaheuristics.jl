@@ -345,6 +345,9 @@ function lbfgs_search_alternatives(
     model::JuMP.Model,
     target_vars::Vector{JuMP.VariableRef},
     n_alternatives::Int64,
+    eps::Float64 = 0.1,
+    max_allowed_cost::Float64 = Inf,
+    optimizer_search = nothing,
 )
     all_vars = all_variables(model)
     x_optimal = value.(all_vars)
@@ -380,15 +383,16 @@ function lbfgs_search_alternatives(
         # We use w as the directional gradient. Since L-BFGS will try to minimize w^T * x,
         # the high weights will force it away from previously used variables.
         # We anchor the search to x_optimal to prevent drifting.
-        alternative = run_lbfgs_mga(model, x_optimal, 0.1, w)
+        alternative =
+            run_lbfgs_mga(model, x_optimal, eps, w, max_allowed_cost, optimizer_search)
 
         if !isnothing(alternative)
             push!(alternatives, alternative)
             # Update x_current so the next iteration penalizes THIS new alternative
             x_current = alternative
         else
-            # Stop if the L-BFGS solver fails to find a new point in the feasible space
-            break
+            @warn "Skipping an alternative due to projection failure."
+            continue
         end
     end
 
