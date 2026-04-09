@@ -347,6 +347,7 @@ function lbfgs_search_alternatives(
     n_alternatives::Int64,
     eps::Float64 = 0.1,
     max_allowed_cost::Float64 = Inf,
+    repair_solution = false,
     optimizer_search = nothing,
 )
     all_vars = all_variables(model)
@@ -358,6 +359,8 @@ function lbfgs_search_alternatives(
     target_ubs = [upper_bound(v) for v in target_vars]
 
     alternatives = []
+    max_distances = []
+    max_percentages = []
 
     # x_current represents the solution we are currently evaluating to build penalties
     x_current = x_optimal
@@ -383,17 +386,52 @@ function lbfgs_search_alternatives(
         # We use w as the directional gradient. Since L-BFGS will try to minimize w^T * x,
         # the high weights will force it away from previously used variables.
         # We anchor the search to x_optimal to prevent drifting.
-        alternative =
-            run_lbfgs_mga(model, x_optimal, eps, w, max_allowed_cost, optimizer_search)
+        if repair_solution
+            alternative, max_distance, max_percentage = run_lbfgs_mga(
+                model,
+                x_optimal,
+                eps,
+                w,
+                max_allowed_cost,
+                repair_solution,
+                optimizer_search,
+            )
 
-        if !isnothing(alternative)
-            push!(alternatives, alternative)
-            # Update x_current so the next iteration penalizes THIS new alternative
-            x_current = alternative
+            if !isnothing(alternative)
+                push!(alternatives, alternative)
+                # Update x_current so the next iteration penalizes THIS new alternative
+                x_current = alternative
+                push!(max_distances, max_distance)
+                push!(max_percentages, max_percentage)
+            else
+                @warn "Skipping an alternative due to projection failure."
+                continue
+            end
+
         else
-            @warn "Skipping an alternative due to projection failure."
-            continue
+            alternative = run_lbfgs_mga(
+                model,
+                x_optimal,
+                eps,
+                w,
+                max_allowed_cost,
+                repair_solution,
+                optimizer_search,
+            )
+
+            if !isnothing(alternative)
+                push!(alternatives, alternative)
+                # Update x_current so the next iteration penalizes THIS new alternative
+                x_current = alternative
+            else
+                @warn "Skipping an alternative due to projection failure."
+                continue
+            end
         end
+    end
+
+    if repair_solution
+        return alternatives, max_distances, max_percentages
     end
 
     return alternatives

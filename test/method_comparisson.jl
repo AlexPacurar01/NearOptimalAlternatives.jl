@@ -102,14 +102,21 @@ function is_feasible(model, val_map_by_name, max_allowed_cost; tol = 1e-4)
     # cost_tol = max(tol, max_allowed_cost * tol)
     cost_tol = tol # Using absolute tolerance for cost to avoid issues when optimal cost is near zero
 
+    out = true
+
+    max_violation = 0.0
+
     # 1. Check if the alternative respects the cost limit
     total_cost = value(lookup, objective_function(model))
     if total_cost > max_allowed_cost + cost_tol
-        println("❌ FEASIBILITY FAILED: Cost Limit Exceeded!")
-        println("   Max Allowed: $max_allowed_cost")
-        println("   Actual Cost: $total_cost")
-        println("   Difference:  $(total_cost - max_allowed_cost)")
-        return false
+        # println("❌ FEASIBILITY FAILED: Cost Limit Exceeded!")
+        # println("   Max Allowed: $max_allowed_cost")
+        # println("   Actual Cost: $total_cost")
+        # println("   Difference:  $(total_cost - max_allowed_cost)")
+        out = false
+        if total_cost - max_allowed_cost > max_violation
+            max_violation = total_cost - max_allowed_cost
+        end
     end
 
     # 2. Check all physical grid constraints
@@ -120,33 +127,45 @@ function is_feasible(model, val_map_by_name, max_allowed_cost; tol = 1e-4)
             set = c_obj.set
 
             if S <: MOI.LessThan && val > set.upper + cost_tol
-                println("❌ FEASIBILITY FAILED: LessThan Constraint!")
-                println("   Constraint: $cref")
-                println(
-                    "   Value: $val | Upper Bound: $(set.upper) | Viol: $(val - set.upper)",
-                )
-                return false
+                # println("❌ FEASIBILITY FAILED: LessThan Constraint!")
+                # println("   Constraint: $cref")
+                # println(
+                #     "   Value: $val | Upper Bound: $(set.upper) | Viol: $(val - set.upper)",
+                # )
+                out = false
+                if val - set.upper > max_violation
+                    max_violation = val - set.upper
+                end
             end
             if S <: MOI.GreaterThan && val < set.lower - cost_tol
-                println("❌ FEASIBILITY FAILED: GreaterThan Constraint!")
-                println("   Constraint: $cref")
-                println(
-                    "   Value: $val | Lower Bound: $(set.lower) | Viol: $(set.lower - val)",
-                )
-                return false
+                # println("❌ FEASIBILITY FAILED: GreaterThan Constraint!")
+                # println("   Constraint: $cref")
+                # println(
+                #     "   Value: $val | Lower Bound: $(set.lower) | Viol: $(set.lower - val)",
+                # )
+                out = false
+                if set.lower - val > max_violation
+                    max_violation = set.lower - val
+                end
             end
             if S <: MOI.EqualTo && abs(val - set.value) > cost_tol
-                println("❌ FEASIBILITY FAILED: EqualTo Constraint (Energy Balance)!")
-                println("   Constraint: $cref")
-                println(
-                    "   Value: $val | Required: $(set.value) | Diff: $(abs(val - set.value))",
-                )
-                return false
+                # println("❌ FEASIBILITY FAILED: EqualTo Constraint (Energy Balance)!")
+                # println("   Constraint: $cref")
+                # println(
+                #     "   Value: $val | Required: $(set.value) | Diff: $(abs(val - set.value))",
+                # )
+                out = false
+                if abs(val - set.value) > max_violation
+                    max_violation = abs(val - set.value)
+                end
             end
             if S <: MOI.Interval &&
                (val < set.lower - cost_tol || val > set.upper + cost_tol)
-                println("❌ FEASIBILITY FAILED: Interval Constraint!")
-                return false
+                # println("❌ FEASIBILITY FAILED: Interval Constraint!")
+                out = false
+                if abs(val - set.lower) > max_violation
+                    max_violation = abs(val - set.lower)
+                end
             end
         end
     end
@@ -155,20 +174,29 @@ function is_feasible(model, val_map_by_name, max_allowed_cost; tol = 1e-4)
     for v in all_variables(model)
         val = lookup(v)
         if has_lower_bound(v) && val < lower_bound(v) - cost_tol
-            println("❌ FEASIBILITY FAILED: Variable Lower Bound!")
-            println("   Variable: $(name(v))")
-            println("   Value: $val | Lower Bound: $(lower_bound(v))")
-            return false
+            # println("❌ FEASIBILITY FAILED: Variable Lower Bound!")
+            # println("   Variable: $(name(v))")
+            # println("   Value: $val | Lower Bound: $(lower_bound(v))")
+            out = false
+            if val - lower_bound(v) > max_violation
+                max_violation = val - lower_bound(v)
+            end
         end
         if has_upper_bound(v) && val > upper_bound(v) + cost_tol
-            println("❌ FEASIBILITY FAILED: Variable Upper Bound!")
-            println("   Variable: $(name(v))")
-            println("   Value: $val | Upper Bound: $(upper_bound(v))")
-            return false
+            # println("❌ FEASIBILITY FAILED: Variable Upper Bound!")
+            # println("   Variable: $(name(v))")
+            # println("   Value: $val | Upper Bound: $(upper_bound(v))")
+            out = false
+            if upper_bound(v) - val > max_violation
+                max_violation = upper_bound(v) - val
+            end
         end
     end
 
-    return true
+    println(
+        "✅ Feasibility Check Completed. Result: $(out ? "FEASIBLE" : "INFEASIBLE") | Max Violation: $max_violation",
+    )
+    return out, max_violation
 end
 
 # --- Setup Base Model ---
@@ -205,7 +233,7 @@ println("Model has $model_size decision variables.")
 # sleep(1) # Just to ensure the print statements are readable before we start the iterations
 
 # --- Statistical Testing Setup ---
-n_iterations = 5 # Adjust to 1000 for final run
+n_iterations = 1000 # Adjust to 1000 for final run
 println("\nStarting $n_iterations statistical runs...")
 
 # Data collectors
@@ -218,6 +246,14 @@ hsj_feasibility_rates = Int[];
 spores_dominates_count = Int[];
 lbfgs_dominates_count = Int[];
 hsj_dominates_count = Int[];
+lbfgs_repair_times = Float64[];
+lbfgs_repair_feasibility_rates = Float64[];
+lbfgs_repair_dominates_count = Int[];
+
+lbfgs_max_distances = Float64[];
+lbfgs_max_percentages = Float64[];
+
+lbfgs_max_violations = Float64[];
 
 for iter = 1:n_iterations
     if iter % 10 == 0
@@ -254,9 +290,35 @@ for iter = 1:n_iterations
         5,
         slack_percentage,
         max_allowed_cost,
+        false,
         Gurobi.Optimizer,
     )
     push!(lbfgs_times, time() - t0)
+
+    ## -- 2.5. Run LBFGS with repair --
+    copy_model = copy(base_model)
+    set_optimizer(copy_model, Gurobi.Optimizer)
+    set_silent(copy_model)
+    optimize!(copy_model)
+
+    t0 = time()
+    lbfgs_repair_alts, max_distance, max_percentage = lbfgs_search_alternatives(
+        copy_model,
+        all_variables(copy_model),
+        5,
+        slack_percentage,
+        max_allowed_cost,
+        true,
+        Gurobi.Optimizer,
+    )
+    push!(lbfgs_repair_times, time() - t0)
+
+    for dist in max_distance
+        push!(lbfgs_max_distances, dist)
+    end
+    for perc in max_percentage
+        push!(lbfgs_max_percentages, perc)
+    end
 
     ## -- 3. Run Directionally Weighted Variable Search --
     copy_model = copy(base_model)
@@ -301,14 +363,23 @@ for iter = 1:n_iterations
     spores_dicts = process_alternatives(spores_alts)
     lbfgs_dicts = process_alternatives(lbfgs_alts)
     hsj_dicts = process_alternatives(hsj_alts)
+    lbfgs_repair_dicts = process_alternatives(lbfgs_repair_alts)
     # Check feasibility for all 5 generated alternatives
-    s_feas_mask = [is_feasible(base_model, d, max_allowed_cost) for d in spores_dicts]
-    l_feas_mask = [is_feasible(base_model, d, max_allowed_cost) for d in lbfgs_dicts]
-    hsj_feas_mask = [is_feasible(base_model, d, max_allowed_cost) for d in hsj_dicts]
+    s_feas_mask = [is_feasible(base_model, d, max_allowed_cost)[1] for d in spores_dicts]
+    l_feas_mask = [is_feasible(base_model, d, max_allowed_cost)[1] for d in lbfgs_dicts]
+    hsj_feas_mask = [is_feasible(base_model, d, max_allowed_cost)[1] for d in hsj_dicts]
+    l_repair_feas_mask =
+        [is_feasible(base_model, d, max_allowed_cost)[1] for d in lbfgs_repair_dicts]
+
+    l_max_violations =
+        [is_feasible(base_model, d, max_allowed_cost)[2] for d in lbfgs_dicts]
 
     push!(spores_feasibility_rates, sum(s_feas_mask))
     push!(lbfgs_feasibility_rates, sum(l_feas_mask))
     push!(hsj_feasibility_rates, sum(hsj_feas_mask))
+    push!(lbfgs_repair_feasibility_rates, sum(l_repair_feas_mask))
+    push!(lbfgs_max_violations, maximum(l_max_violations))
+
 
     ## -- 5. Check Dominance (ONLY on feasible solutions!) --
     # Extract just the capacity vectors for the feasible ones
@@ -320,6 +391,10 @@ for iter = 1:n_iterations
         [get_caps(lbfgs_dicts[i]) for i = 1:length(lbfgs_dicts) if l_feas_mask[i]]
     hsj_feasible_caps =
         [get_caps(hsj_dicts[i]) for i = 1:length(hsj_dicts) if hsj_feas_mask[i]]
+    lbfgs_repair_feasible_caps = [
+        get_caps(lbfgs_repair_dicts[i]) for
+        i = 1:length(lbfgs_repair_dicts) if l_repair_feas_mask[i]
+    ]
 
     s_dom_l = 0
     l_dom_s = 0
@@ -372,34 +447,36 @@ println("\n--- Testing Complete! Generating Plots... ---")
 # --- Plotting the Results ---
 # 1. Plot Runtimes
 p1 = bar(
-    ["SPORES", "LBFGS", "HSJ"],
-    [mean(spores_times), mean(lbfgs_times), mean(hsj_times)],
-    yerror = [std(spores_times), std(lbfgs_times), std(hsj_times)],
+    ["HSJ", "SPORES", "LBFGS", "LBFGS with Repair"],
+    [mean(hsj_times), mean(spores_times), mean(lbfgs_times), mean(lbfgs_repair_times)],
+    yerror = [std(hsj_times), std(spores_times), std(lbfgs_times), std(lbfgs_repair_times)],
     title = "Average Run Time (s)",
     ylabel = "Time (Seconds)",
-    color = [:blue, :orange, :green],
+    color = [:blue, :orange, :green, :red],
     legend = false,
 )
 
 # 2. Plot Feasibility (Out of 5 alternatives per run)
-p2 = bar(
-    ["SPORES", "LBFGS", "HSJ"],
-    [
-        mean(spores_feasibility_rates),
-        mean(lbfgs_feasibility_rates),
-        mean(hsj_feasibility_rates),
-    ],
-    yerror = [
-        std(spores_feasibility_rates),
-        std(lbfgs_feasibility_rates),
-        std(hsj_feasibility_rates),
-    ],
-    title = "Feasible Alternatives\n(Max 5 per run)",
-    ylabel = "Count",
-    color = [:green, :purple, :brown],
-    legend = false,
-    ylim = (0, 5.5),
-)
+# p2 = bar(
+#     ["HSJ", "SPORES", "LBFGS", "LBFGS with Repair"],
+#     [
+#         mean(spores_feasibility_rates),
+#         mean(lbfgs_feasibility_rates),
+#         mean(hsj_feasibility_rates),
+#         mean(lbfgs_repair_feasibility_rates),
+#     ],
+#     yerror = [
+#         std(spores_feasibility_rates),
+#         std(lbfgs_feasibility_rates),
+#         std(hsj_feasibility_rates),
+#         std(lbfgs_repair_feasibility_rates),
+#     ],
+#     title = "Feasible Alternatives\n(Max 5 per run)",
+#     ylabel = "Count",
+#     color = [:green, :purple, :brown, :pink],
+#     legend = false,
+#     ylim = (0, 5.5),
+# )
 
 # 3. Plot Dominance
 # p3 = bar(["SPORES dom. LBFGS", "LBFGS dom. SPORES", "HSJ dom. SPORES"], [mean(spores_dominates_count), mean(lbfgs_dominates_count), mean(hsj_dominates_count)],
@@ -407,18 +484,41 @@ p2 = bar(
 #     title="Average Dominance\nEvents Per Run", ylabel="# of dominations",
 #     color=[:teal, :red, :orange], legend=false)
 
+# Plot distribution of LBFGS max distances
+p3 = histogram(
+    lbfgs_max_violations,
+    title = "LBFGS Max Constraint Violations",
+    xlabel = "Max Violation",
+    ylabel = "Frequency",
+    legend = false,
+    color = :cyan,
+)
+
+p4 = histogram(
+    lbfgs_max_distances,
+    title = "LBFGS Max Distances from Solution to Feasible Solution",
+    xlabel = "Max Distance",
+    ylabel = "Frequency",
+    legend = false,
+    color = :magenta,
+)
+
 # Combine and display the plots in a 1x3 grid
-final_plot = plot(p1, p2, layout = (1, 3), size = (1000, 400), margin = 5Plots.mm)
-display(final_plot)
+times = plot(p1, size = (1000, 400), margin = 5Plots.mm)
+display(times)
+err_plot = plot(p3, size = (1000, 400), margin = 5Plots.mm)
+display(err_plot)
+dist_plot = plot(p4, size = (1000, 400), margin = 5Plots.mm)
+display(dist_plot)
 
 # Print Summary Statistics to the console
 println("\n--- Summary Statistics ($n_iterations runs) ---")
 println(
-    "SPORES | Avg Time: $(round(mean(spores_times), digits=2))s ± $(round(std(spores_times), digits=2)) | Feasible Alts: $(round(mean(spores_feasibility_rates), digits=2))/5 | Dominated $(sum(spores_dominates_count)) times",
+    "SPORES | Avg Time: $(round(mean(spores_times), digits=2))s ± $(round(std(spores_times), digits=2)) | Feasible Alts: $(mean(spores_feasibility_rates))/5 | Dominated $(sum(spores_dominates_count)) times",
 )
 println(
-    "LBFGS  | Avg Time: $(round(mean(lbfgs_times), digits=2))s ± $(round(std(lbfgs_times), digits=2)) | Feasible Alts: $(round(mean(lbfgs_feasibility_rates), digits=2))/5 | Dominated $(sum(lbfgs_dominates_count)) times",
+    "LBFGS  | Avg Time: $(round(mean(lbfgs_times), digits=2))s ± $(round(std(lbfgs_times), digits=2)) | Feasible Alts: $(mean(lbfgs_feasibility_rates))/5 | Dominated $(sum(lbfgs_dominates_count)) times",
 )
 println(
-    "HSJ  | Avg Time: $(round(mean(hsj_times), digits=2))s ± $(round(std(hsj_times), digits=2)) | Feasible Alts: $(round(mean(hsj_feasibility_rates), digits=2))/5 | Dominated $(sum(hsj_dominates_count)) times",
+    "HSJ  | Avg Time: $(round(mean(hsj_times), digits=2))s ± $(round(std(hsj_times), digits=2)) | Feasible Alts: $(mean(hsj_feasibility_rates))/5 | Dominated $(sum(hsj_dominates_count)) times",
 )

@@ -86,13 +86,13 @@ function operational_recovery!(
     model::Model,
     lazy_solution::Vector{Float64},
     is_structural_mask::BitVector,
-    max_allowed_cost::Float64,  # <--- NEW
+    max_allowed_cost::Float64,
     optimizer_factory,
 )
     recov_model, ref_map = JuMP.copy_model(model)
     set_optimizer(recov_model, optimizer_factory)
 
-    # 1. ENFORCE THE BUDGET! This guarantees it passes your is_feasible check.
+    # 1. ENFORCE THE BUDGET!
     old_obj = objective_function(recov_model)
     @constraint(recov_model, mga_strict_budget, old_obj <= max_allowed_cost)
 
@@ -113,7 +113,7 @@ function operational_recovery!(
         end
     end
 
-    # 3. MINIMIZE THE DISTANCE: Force Gurobi to match L-BFGS as closely as physics allow
+    # 3. MINIMIZE MAXIMUM VARIABLE DEVIATION (L1 norm of differences)
     @objective(
         recov_model,
         Min,
@@ -128,7 +128,25 @@ function operational_recovery!(
         return nothing
     end
 
-    return JuMP.value.(all_variables(recov_model))
+    max_distance = maximum(
+        abs.(
+            lazy_solution[i] - JuMP.value(ref_map[original_vars[i]]) for
+            i = 1:length(original_vars) if is_structural_mask[i]
+        ),
+    )
+    max_percentage = maximum(
+        abs.(
+            (lazy_solution[i] - JuMP.value(ref_map[original_vars[i]])) /
+            max(1e-6, lazy_solution[i]) for
+            i = 1:length(original_vars) if is_structural_mask[i]
+        ),
+    )
+    println("Projection successful! Max distance from L-BFGS guess: $max_distance")
+    println(
+        "Projection successful! Max percentage deviation from L-BFGS guess: $max_percentage",
+    )
+
+    return JuMP.value.(all_variables(recov_model)), max_distance, max_percentage
 end
 
 function repair_equalities(x_guess, A_eq, b_eq)
@@ -156,6 +174,7 @@ function run_lbfgs_mga(
     eps::Float64 = 0.1,
     w::Vector{Float64} = zeros(length(x_start)),
     max_allowed_cost::Float64 = Inf,
+    repair = false,
     optimizer_search = nothing,
 )
 
@@ -177,10 +196,13 @@ function run_lbfgs_mga(
 
     A_in, b_in, A_eq, b_eq = extract_all_constraints(new_model, vars)
 
+    # lambda = zeros(size(A_eq, 1)) # Multipliers for Equalities
+    # nu = zeros(size(A_in, 1))     # Multipliers for Inequalities
+
     # Penalty hyper-parameters (You may need to tune these! If the final recovered cost
     # is too high, increase rho. If L-BFGS fails to move, decrease rho.)
-    rho = 10000  # Inequality penalty weight
-    mu = 1000000   # Equality penalty weight
+    rho = 1000  # Inequality penalty weight
+    mu = 10000   # Equality penalty weight
 
     w = w ./ norm(w) # Normalize feature weights just in case
 
@@ -215,11 +237,10 @@ function run_lbfgs_mga(
         end
     end
 
-    println("Starting L-BFGS search...")
     # Start L-BFGS slightly perturbed from x_known so the gradient isn't perfectly zero
     x_start = x_start .+ 0.01 * randn(length(x_start))
 
-
+    # println("Starting L-BFGS search...")
     # Run the optimizer
     res = optimize(
         only_fg!(fg!),
@@ -229,16 +250,81 @@ function run_lbfgs_mga(
     )
     x_lbfgs = Optim.minimizer(res)
 
-    # println("L-BFGS converged. Running Operational Recovery (Snap to Grid)...")
-    # final_point = operational_recovery!(
-    #     model,
-    #     x_lbfgs,
-    #     is_structural,
-    #     max_allowed_cost,
-    #     optimizer_search,
-    # )
-    # final_point = x_lbfgs
-    final_point = repair_equalities(x_lbfgs, A_eq, b_eq)
+
+    # println("Starting Augmented Lagrangian L-BFGS search...")
+    # x_current = x_start .+ 0.01 * randn(length(x_start)) # Perturb the start to avoid zero gradients at the known solution
+
+    # # Outer ALM Loop
+    # max_outer_iters = 10
+    # viol_in = 0.0
+    # viol_eq = 0.0
+    # max_viol = 0.0
+    # for outer_iter = 1:max_outer_iters
+
+    #     # Inner Loop Objective & Gradient (Captures lambda and nu from outer scope)
+    #     function fg!(F, G, x)
+    #         viol_in = (A_in * x) .- b_in
+    #         viol_eq = (A_eq * x) .- b_eq
+
+    #         # Calculate "active" multipliers combining current multipliers and penalties
+    #         active_lambda = lambda .+ mu .* viol_eq
+    #         active_nu = max.(0.0, nu .+ rho .* viol_in)
+
+    #         if G !== nothing
+    #             grad_dist = w
+    #             grad_eq = A_eq' * active_lambda
+    #             grad_in = A_in' * active_nu
+    #             G .= grad_dist .+ grad_in .+ grad_eq
+    #         end
+
+    #         if F !== nothing
+    #             loss_objective = dot(w, x)
+    #             loss_eq = dot(lambda, viol_eq) + (mu / 2.0) * sum(viol_eq .^ 2)
+    #             # The mathematically exact ALM term for inequalities (ignoring constants w.r.t x)
+    #             loss_in = (1.0 / (2.0 * rho)) * sum(active_nu .^ 2)
+
+    #             return loss_objective + loss_eq + loss_in
+    #         end
+    #     end
+
+    #     # Run a short L-BFGS optimization using current multipliers
+    #     res = optimize(
+    #         only_fg!(fg!),
+    #         x_current,
+    #         LBFGS(),
+    #         Optim.Options(iterations = 10, show_trace = false),
+    #     )
+    #     x_current = Optim.minimizer(res)
+
+    #     # 4. Update the Lagrange Multipliers
+    #     viol_eq = (A_eq * x_current) .- b_eq
+    #     viol_in = (A_in * x_current) .- b_in
+
+    #     lambda .= lambda .+ mu .* viol_eq
+    #     nu .= max.(0.0, nu .+ rho .* viol_in)
+
+    #     # Check for feasibility to break early
+    #     max_viol = max(maximum(abs.(viol_eq)), maximum(max.(0.0, viol_in)))
+    #     if max_viol < 1e-5
+    #         println("Converged to feasible solution at outer iteration $outer_iter")
+    #         break
+    #     end
+    # end
+
+    final_point = x_lbfgs
+
+    if repair
+        println("L-BFGS converged. Running Operational Recovery (Snap to Grid)...")
+        final_point, max_distance, max_percentage = operational_recovery!(
+            model,
+            x_lbfgs,
+            is_structural,
+            max_allowed_cost,
+            optimizer_search,
+        )
+        return final_point, max_distance, max_percentage
+    end
+    # final_point = x_current
 
 
     return final_point
