@@ -32,6 +32,9 @@ function Spores_initial!(
 ) where {T<:Union{VariableRef,AffExpr},N}
     # new objective function consist of the n variables in variables
     for (i, v) in enumerate(variables)
+        if !has_upper_bound(v) || upper_bound(v) == 0
+            continue
+        end
         weights[i] = weights[i] + value(v) / upper_bound(v)
     end
     # Fix the variables that are fixed
@@ -71,6 +74,9 @@ function Spores_update!(
 ) where {T<:Union{VariableRef,AffExpr},N}
     # new objective function consist of the n variables in variables
     for (i, v) in enumerate(variables)
+        if !has_upper_bound(v) || upper_bound(v) == 0
+            continue
+        end
         weights[i] = weights[i] + value(v) / upper_bound(v)
     end
 
