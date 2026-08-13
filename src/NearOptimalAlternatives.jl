@@ -6,8 +6,6 @@ using MathOptInterface
 using Metaheuristics
 using DataStructures
 using Statistics
-using LinearAlgebra
-using SparseArrays
 
 # PSOGA Algorithm (metaheuristic)
 include("algorithms/PSOGA/PSOGA.jl")
