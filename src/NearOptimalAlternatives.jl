@@ -13,13 +13,6 @@ using SparseArrays
 include("algorithms/PSOGA/PSOGA.jl")
 include("algorithms/PSOGA/is_better.jl")
 
-# Gradient-based optimization methods (first-order solvers + MGA driver)
-include("Optimization-Methods/First-Order-Solvers.jl")
-include("Optimization-Methods/Gradient-MGA.jl")
-include("Optimization-Methods/Boundary-Walk.jl")
-include("Optimization-Methods/Projected-Walk.jl")
-include("Optimization-Methods/Continuation-Walk.jl")
-
 # MGA Methods
 include("MGA-Methods/Max-Distance.jl")
 include("MGA-Methods/HSJ.jl")
@@ -31,7 +24,6 @@ include("MGA-Methods/Directionally-Weighted-Variables.jl")
 # Create different problems
 include("alternative-optimization.jl")
 include("alternative-metaheuristics.jl")
-include("alternative-gradient.jl")
 
 # Main file for generating alternatives
 include("generate-alternatives.jl")
