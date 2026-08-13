@@ -1,7 +1,0 @@
-run_id,dataset,backend,npoints,arm,median_total_s,median_per_resolve_s,max_dobj_reldiff_vs_A,n_failed,n_retried,peak_rss_gb
-Norse_gurobi,Norse,gurobi,5,cold_barrier,1.5460,0.3020,0.000e+00,0,0,0.99
-Norse_gurobi,Norse,gurobi,5,warm_simplex,1.5390,0.3300,9.872e-09,0,0,0.99
-Norse_gurobi,Norse,gurobi,5,cold_simplex,6.2760,1.2310,1.098e-09,0,0,0.99
-Norse_gurobi,Norse,gurobi,25,cold_barrier,7.5650,0.2940,0.000e+00,0,0,0.99
-Norse_gurobi,Norse,gurobi,25,warm_simplex,2.3660,0.0635,9.872e-09,0,0,0.99
-Norse_gurobi,Norse,gurobi,25,cold_simplex,33.3950,1.3390,1.624e-09,0,0,0.99

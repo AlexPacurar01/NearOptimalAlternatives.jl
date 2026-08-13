@@ -1,7 +1,0 @@
-run_id,dataset,backend,npoints,arm,median_total_s,median_per_resolve_s,max_dobj_reldiff_vs_A,peak_rss_gb
-local,small,highs,5,cold_barrier,0.3502,0.0672,0.000e+00,0.54
-local,small,highs,5,warm_simplex,0.1607,0.0015,3.958e-09,0.54
-local,small,highs,5,cold_simplex,0.1125,0.0227,3.958e-09,0.54
-local,small,highs,25,cold_barrier,1.6333,0.0630,0.000e+00,0.54
-local,small,highs,25,warm_simplex,0.1616,0.0009,7.354e-09,0.54
-local,small,highs,25,cold_simplex,0.5642,0.0223,7.354e-09,0.54

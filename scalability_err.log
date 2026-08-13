@@ -1,8 +1,0 @@
-Precompiling packages...
-  13214.5 ms  ✓ NearOptimalAlternatives
-  1 dependency successfully precompiled in 37 seconds. 300 already precompiled.
-[ Info: Setting up NearOptimalAlternatives problem with 745 target variables.
-[ Info: Structural LP (745 investment vars): obj=0.0 | LP utopian (structural)=1.85801e6 | gap=100.0% | budget_viol=-146.0
-[ Info: Before recovery: obj=0.0 | gap to LP utopian=100.0%
-[ Info: After  recovery: obj=2.0726e6 | gap=11.55%
-[ Info: Comparison plot saved to C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\alm_trajectory.png

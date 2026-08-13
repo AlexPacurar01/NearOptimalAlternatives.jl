@@ -1,7 +1,0 @@
-view,backend,source,size,nvars,method,budget,n_alts,time_s,dev,mean_pw,min_pw,coverage,hull
-A,highs,synth,small,972,alm_lbfgs,16,1,0.4918,5.0008e-03,0.0000,0.0000,0.0000,0.0000
-A,highs,synth,small,972,pdhg,5000,1,0.1962,6.6675e-02,0.0000,0.0000,0.0000,0.0000
-A,highs,synth,small,972,Spores,0,1,0.1199,NaN,0.0000,0.0000,0.0000,0.0000
-div,highs,synth,small,972,alm_lbfgs,16,1,0.4894,5.0008e-03,0.0000,0.0000,0.0000,0.0000
-div,highs,synth,small,972,pdhg,5000,1,0.2021,6.6675e-02,0.0000,0.0000,0.0000,0.0000
-div,highs,synth,small,972,Spores,0,1,0.1289,NaN,0.0000,0.0000,0.0000,0.0000

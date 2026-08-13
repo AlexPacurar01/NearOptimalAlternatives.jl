@@ -1,5 +1,0 @@
-case,method,n_solves,total_iters,mean_iters,total_time_s,max_infeas,frac_front_dominated_by_exact
-Norse,alm_lbfgs,4,31,7.8,4.4189,3.40e-01,0.000
-Norse,penalty,4,27,6.8,4.1132,3.53e-01,0.000
-Norse,pdhg,4,40000,10000.0,4.8745,2.57e-02,0.000
-Norse,scs,5,0,0.0,437.3474,NaN,0.000

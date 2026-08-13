@@ -1,5 +1,0 @@
-case,nvars,method,time_s,iters,infeas,miss_pct,sol_dist,dominated,obj_s,exact_obj_s
-Norse,7180,penalty,16.7420,60,3.345e+01,35.45535,7.9308e+00,no,164.319,113.082
-Norse,7180,alm_lbfgs,16.6200,60,2.969e+01,36.91913,7.6318e+00,no,166.435,113.082
-Norse,7180,pdhg,1.9660,20000,1.906e+02,0.00000,9.5860e+00,no,96.3976,113.082
-Norse,7180,scs,88.5880,0,4.227e+00,4.50044,1.3674e+00,no,119.585,113.082

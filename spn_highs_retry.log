@@ -1,9 +1,0 @@
-[2026-07-23T14:32:29.169] spores native-hook: Norse backend=highs threads=1
-  N=[2, 5, 10] eps=0.2 repeats=3 -> C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\spores_native_hook
-  N=2   barrier             base(excluded)=  4.365s  spores_total=   5.7016s  per_alt=  2.8508s
-  N=2   warm_primal_simplex base(excluded)=  4.251s  spores_total=   2.8166s  per_alt=  1.4083s
-  N=5   barrier             base(excluded)=  4.315s  spores_total=  18.0502s  per_alt=  3.6100s
-  N=5   warm_primal_simplex base(excluded)=  4.355s  spores_total=   2.8939s  per_alt=  0.5788s
-  N=10  barrier             base(excluded)=  4.132s  spores_total=  34.3135s  per_alt=  3.4313s
-  N=10  warm_primal_simplex base(excluded)=  4.117s  spores_total=   2.9791s  per_alt=  0.2979s
-[2026-07-23T14:37:36.684] done -> C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\spores_native_hook\points_highs_norse_retry.csv

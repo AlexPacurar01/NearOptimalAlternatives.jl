@@ -1,5 +1,0 @@
-step,variant,gamma,spores_cost,spores_dobj,walk_best_cost,n_dominated,cost_saving,frac_saving,walk_time_s
-1,raw,0.0000,1.75338e+11,6.79305e-12,NaN,0,0,0,159.079
-1,lexicographic,0.0000,1.75338e+11,6.79305e-12,NaN,0,0,0,268.987
-2,raw,0.0000,1.75338e+11,5.66456e-11,NaN,0,0,0,154.519
-2,lexicographic,0.0000,1.75338e+11,5.66456e-11,NaN,0,0,0,228.165

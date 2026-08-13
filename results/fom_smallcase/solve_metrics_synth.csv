@@ -1,5 +1,0 @@
-case,nvars,method,time_s,iters,infeas,miss_pct,sol_dist,dominated,obj_s,exact_obj_s
-synth,392,penalty,0.3790,11,2.279e-07,0.09883,3.6723e-03,no,2.4873,2.46786
-synth,392,alm_lbfgs,0.4420,9,1.934e-07,0.00000,1.7416e-08,no,2.46786,2.46786
-synth,392,pdhg,0.3940,20000,2.146e-03,0.67918,2.3366e-02,no,2.60146,2.46786
-synth,392,scs,0.5242,0,2.006e-07,0.00000,1.9914e-08,no,2.46786,2.46786

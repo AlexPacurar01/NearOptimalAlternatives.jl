@@ -1,7 +1,0 @@
-run_id,dataset,backend,npoints,arm,median_total_s,median_per_resolve_s,max_dobj_reldiff_vs_A,n_failed,n_retried,peak_rss_gb
-Norse,Norse,highs,5,cold_barrier,23.9140,4.3136,0.000e+00,0,1,1.03
-Norse,Norse,highs,5,warm_simplex,3.2844,0.2583,1.266e-14,0,0,1.03
-Norse,Norse,highs,5,cold_simplex,5.6571,1.1539,1.384e-14,0,0,1.03
-Norse,Norse,highs,25,cold_barrier,80.2837,2.3657,0.000e+00,0,1,1.03
-Norse,Norse,highs,25,warm_simplex,3.5693,0.0576,2.433e-14,0,0,1.03
-Norse,Norse,highs,25,cold_simplex,27.6914,1.1153,1.384e-14,0,0,1.03

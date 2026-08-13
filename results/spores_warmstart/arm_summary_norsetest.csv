@@ -1,7 +1,0 @@
-run_id,dataset,backend,n_alt,arm,median_total_s,median_per_resolve_s,max_dobj_reldiff_vs_cold,n_failed,peak_rss_gb
-norsetest,Norse,highs,2,cold_barrier,6.5532,3.2766,0.000e+00,0,1.12
-norsetest,Norse,highs,2,warm_primal_simplex,3.8243,0.0135,4.892e-08,0,1.12
-norsetest,Norse,highs,5,cold_barrier,23.3826,4.8278,0.000e+00,0,1.12
-norsetest,Norse,highs,5,warm_primal_simplex,3.8450,0.0088,1.603e-08,0,1.12
-norsetest,Norse,highs,10,cold_barrier,44.3946,5.2529,0.000e+00,0,1.12
-norsetest,Norse,highs,10,warm_primal_simplex,4.0240,0.0048,1.603e-08,0,1.12

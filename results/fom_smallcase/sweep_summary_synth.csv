@@ -1,5 +1,0 @@
-case,method,n_solves,total_iters,mean_iters,total_time_s,max_infeas,frac_front_dominated_by_exact
-synth,alm_lbfgs,7,71,10.1,1.3246,8.06e-07,0.000
-synth,penalty,7,58,8.3,1.1153,9.77e-07,0.500
-synth,pdhg,7,70000,10000.0,1.8811,1.64e-02,0.000
-synth,scs,8,0,0.0,1.8085,NaN,0.250
