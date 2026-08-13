@@ -1,0 +1,432 @@
+Benchmark: THREADS=4 N_ALTS=6 size=(12 struct,48 steps,4 storage)
+
+=== backend: gurobi ===
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.3384464001631572
+Projection successful! Max percentage deviation: 0.6499038096241622
+Projection successful! Max distance from L-BFGS guess: 0.049505001049566566
+Projection successful! Max percentage deviation: 15.836699126513512
+Projection successful! Max distance from L-BFGS guess: 0.24452462942199427
+Projection successful! Max percentage deviation: 5.302376483933956
+Projection successful! Max distance from L-BFGS guess: 0.20107689331941003
+Projection successful! Max percentage deviation: 8.700326319426319
+Projection successful! Max distance from L-BFGS guess: 0.20631707823716194
+Projection successful! Max percentage deviation: 0.09459648618136046
+Projection successful! Max distance from L-BFGS guess: 0.20075960381134017
+Projection successful! Max percentage deviation: 0.9009763870298099
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.0003307774341672065
+Projection successful! Max percentage deviation: 0.0005520546248237316
+Projection successful! Max distance from L-BFGS guess: 0.00010245877279368083
+Projection successful! Max percentage deviation: 13.018414648376659
+Projection successful! Max distance from L-BFGS guess: 0.00010673553077620482
+Projection successful! Max percentage deviation: 106.73553077620483
+Projection successful! Max distance from L-BFGS guess: 8.074529576437633e-5
+Projection successful! Max percentage deviation: 14.330435365413837
+Projection successful! Max distance from L-BFGS guess: 0.00019528734669282954
+Projection successful! Max percentage deviation: 8.37698278907165e-5
+Projection successful! Max distance from L-BFGS guess: 0.0003808218743266423
+Projection successful! Max percentage deviation: 0.0010478359008286094
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.00043701196866918757
+Projection successful! Max percentage deviation: 0.0007996304790462014
+Projection successful! Max distance from L-BFGS guess: 0.00018075297947062094
+Projection successful! Max percentage deviation: 87.25082070358789
+Projection successful! Max distance from L-BFGS guess: 7.45555493127286e-5
+Projection successful! Max percentage deviation: 74.5555493127286
+Projection successful! Max distance from L-BFGS guess: 9.262686162581745e-5
+Projection successful! Max percentage deviation: 38.326593237237255
+Projection successful! Max distance from L-BFGS guess: 0.00028846884461941613
+Projection successful! Max percentage deviation: 0.0005536786285065405
+Projection successful! Max distance from L-BFGS guess: 0.00011129960551868045
+Projection successful! Max percentage deviation: 111.29960551868045
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.00043701196866918757
+Projection successful! Max percentage deviation: 0.0007996304790462014
+Projection successful! Max distance from L-BFGS guess: 0.00018075297947062094
+Projection successful! Max percentage deviation: 87.25082070358789
+Projection successful! Max distance from L-BFGS guess: 7.45555493127286e-5
+Projection successful! Max percentage deviation: 74.5555493127286
+Projection successful! Max distance from L-BFGS guess: 9.262686162581745e-5
+Projection successful! Max percentage deviation: 38.326593237237255
+Projection successful! Max distance from L-BFGS guess: 0.00028846884461941613
+Projection successful! Max percentage deviation: 0.0005536786285065405
+Projection successful! Max distance from L-BFGS guess: 0.00011129960551868045
+Projection successful! Max percentage deviation: 111.29960551868045
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.9135924959450179
+Projection successful! Max percentage deviation: 3.00867359735488
+Projection successful! Max distance from L-BFGS guess: 0.350662206200302
+Projection successful! Max percentage deviation: 138440.30408200077
+Projection successful! Max distance from L-BFGS guess: 0.24051086289382262
+Projection successful! Max percentage deviation: 9.634725003125435
+Projection successful! Max distance from L-BFGS guess: 0.2023859857057344
+Projection successful! Max percentage deviation: 156151.55143161805
+Projection successful! Max distance from L-BFGS guess: 0.2025228881970058
+Projection successful! Max percentage deviation: 0.10990736327773466
+Projection successful! Max distance from L-BFGS guess: 0.2021306987773306
+Projection successful! Max percentage deviation: 0.08385270747331103
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.007011462451340655
+Projection successful! Max percentage deviation: 0.007127609458815766
+Projection successful! Max distance from L-BFGS guess: 0.00150434663758503
+Projection successful! Max percentage deviation: 16.315614034562145
+Projection successful! Max distance from L-BFGS guess: 0.0024111411028826524
+Projection successful! Max percentage deviation: 5.324867772224381
+Projection successful! Max distance from L-BFGS guess: 0.001650702849180341
+Projection successful! Max percentage deviation: 1326.6967641425517
+Projection successful! Max distance from L-BFGS guess: 0.0017399617167024317
+Projection successful! Max percentage deviation: 0.0006719347291418202
+Projection successful! Max distance from L-BFGS guess: 0.001635687124693419
+Projection successful! Max percentage deviation: 0.0026416466112410657
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 6.6591767363677334e-6
+Projection successful! Max percentage deviation: 6.687935475337518e-6
+Projection successful! Max distance from L-BFGS guess: 0.00018281179014420875
+Projection successful! Max percentage deviation: 182.81179014420877
+Projection successful! Max distance from L-BFGS guess: 0.0002632422212838567
+Projection successful! Max percentage deviation: 263.24222128385674
+Projection successful! Max distance from L-BFGS guess: 0.00012976392349212392
+Projection successful! Max percentage deviation: 33.020068402037126
+Projection successful! Max distance from L-BFGS guess: 6.4202325039453e-5
+Projection successful! Max percentage deviation: 2.3266230869697512e-5
+Projection successful! Max distance from L-BFGS guess: 1.937041518296212e-5
+Projection successful! Max percentage deviation: 3.513117996887668e-5
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 6.6591767363677334e-6
+Projection successful! Max percentage deviation: 6.687935475337518e-6
+Projection successful! Max distance from L-BFGS guess: 0.00018281179014420875
+Projection successful! Max percentage deviation: 182.81179014420877
+Projection successful! Max distance from L-BFGS guess: 0.0002632422212838567
+Projection successful! Max percentage deviation: 263.24222128385674
+Projection successful! Max distance from L-BFGS guess: 0.00012976392349212392
+Projection successful! Max percentage deviation: 33.020068402037126
+Projection successful! Max distance from L-BFGS guess: 6.4202325039453e-5
+Projection successful! Max percentage deviation: 2.3266230869697512e-5
+Projection successful! Max distance from L-BFGS guess: 1.937041518296212e-5
+Projection successful! Max percentage deviation: 3.513117996887668e-5
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 5.763514110412871e-10
+Projection successful! Max percentage deviation: 1.6848452732694702e-10
+Projection successful! Max distance from L-BFGS guess: 3.3719427250389344e-10
+Projection successful! Max percentage deviation: 1.0905314035455555e-10
+Projection successful! Max distance from L-BFGS guess: 1.2443379659998755e-10
+Projection successful! Max percentage deviation: 4.531506289854261e-11
+Projection successful! Max distance from L-BFGS guess: 8.431116382823234e-8
+Projection successful! Max percentage deviation: 3.362085829152099e-8
+Projection successful! Max distance from L-BFGS guess: 8.23100636537788e-8
+Projection successful! Max percentage deviation: 3.3554719429142676e-8
+Projection successful! Max distance from L-BFGS guess: 1.0339729072939008e-10
+Projection successful! Max percentage deviation: 4.2432278166585075e-11
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 1.4669518932919345e-8
+Projection successful! Max percentage deviation: 3.460366550790169e-9
+Projection successful! Max distance from L-BFGS guess: 1.0903233871317752e-9
+Projection successful! Max percentage deviation: 2.206845665963636e-10
+Projection successful! Max distance from L-BFGS guess: 4.71573891047683e-10
+Projection successful! Max percentage deviation: 9.760678854378534e-11
+Projection successful! Max distance from L-BFGS guess: 4.384306251381531e-10
+Projection successful! Max percentage deviation: 1.0337393621160439e-10
+Projection successful! Max distance from L-BFGS guess: 3.8970693339024365e-10
+Projection successful! Max percentage deviation: 1.0194587708749903e-10
+Projection successful! Max distance from L-BFGS guess: 5.132037017574476e-10
+Projection successful! Max percentage deviation: 1.4094809012527752e-10
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 2.5397269931559663e-7
+Projection successful! Max percentage deviation: 8.481780702566081e-8
+Projection successful! Max distance from L-BFGS guess: 9.01084526105933e-7
+Projection successful! Max percentage deviation: 2.0350038089752534e-7
+Projection successful! Max distance from L-BFGS guess: 2.349618011265875e-8
+Projection successful! Max percentage deviation: 4.845873695580775e-9
+Projection successful! Max distance from L-BFGS guess: 2.596349713002155e-8
+Projection successful! Max percentage deviation: 5.2001805135372945e-9
+Projection successful! Max distance from L-BFGS guess: 8.047408250888566e-8
+Projection successful! Max percentage deviation: 1.698536258432013e-8
+Projection successful! Max distance from L-BFGS guess: 2.1506690117689686e-7
+Projection successful! Max percentage deviation: 4.690678085363126e-8
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 2.5333458997245373e-7
+Projection successful! Max percentage deviation: 1.715076317097735e-7
+Projection successful! Max distance from L-BFGS guess: 1.4707450040063463e-6
+Projection successful! Max percentage deviation: 3.231285643875944e-7
+Projection successful! Max distance from L-BFGS guess: 9.346360130280118e-9
+Projection successful! Max percentage deviation: 1.951334544899999e-9
+Projection successful! Max distance from L-BFGS guess: 2.01723198145487e-8
+Projection successful! Max percentage deviation: 4.166981903895751e-9
+Projection successful! Max distance from L-BFGS guess: 9.617063057021369e-8
+Projection successful! Max percentage deviation: 1.9872422059227144e-8
+Projection successful! Max distance from L-BFGS guess: 1.224972879576569e-6
+Projection successful! Max percentage deviation: 2.5927108737133664e-7
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.0011123829728168777
+Projection successful! Max percentage deviation: 1112.3829728168778
+Projection successful! Max distance from L-BFGS guess: 0.0015802268155352456
+Projection successful! Max percentage deviation: 1580.2268155352456
+Projection successful! Max distance from L-BFGS guess: 0.0015802268155352456
+Projection successful! Max percentage deviation: 1580.2268155352456
+Projection successful! Max distance from L-BFGS guess: 0.0015802268155352456
+Projection successful! Max percentage deviation: 1580.2268155352456
+Projection successful! Max distance from L-BFGS guess: 0.0015802268155352456
+Projection successful! Max percentage deviation: 1580.2268155352456
+Projection successful! Max distance from L-BFGS guess: 0.0015802268155352456
+Projection successful! Max percentage deviation: 1580.2268155352456
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.0017621037291419839
+Projection successful! Max percentage deviation: 0.0008418327731926371
+Projection successful! Max distance from L-BFGS guess: 0.001685637666700494
+Projection successful! Max percentage deviation: 1685.6376667004943
+Projection successful! Max distance from L-BFGS guess: 0.001505522604544396
+Projection successful! Max percentage deviation: 0.00036030944514671583
+Projection successful! Max distance from L-BFGS guess: 0.0032419170714312884
+Projection successful! Max percentage deviation: 0.0007639009235355107
+Projection successful! Max distance from L-BFGS guess: 0.001988617941558246
+Projection successful! Max percentage deviation: 0.00048079826315319986
+Projection successful! Max distance from L-BFGS guess: 0.0015746939424969852
+Projection successful! Max percentage deviation: 0.0003875682413184322
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Projection successful! Max distance from L-BFGS guess: 0.0035443004665252076
+Projection successful! Max percentage deviation: 0.00992457159578776
+Projection successful! Max distance from L-BFGS guess: 0.0010605110134640776
+Projection successful! Max percentage deviation: 1060.5110134640777
+Projection successful! Max distance from L-BFGS guess: 0.0022492556686399823
+Projection successful! Max percentage deviation: 0.0008263320258651703
+Projection successful! Max distance from L-BFGS guess: 0.002193202242014358
+Projection successful! Max percentage deviation: 0.0005475375847346466
+Projection successful! Max distance from L-BFGS guess: 0.0030137616978125337
+Projection successful! Max percentage deviation: 0.000791536952551069
+Projection successful! Max distance from L-BFGS guess: 0.0015328908367200356
+Projection successful! Max percentage deviation: 0.00035303786561013967
+method         time(s)       dev |   meanPW      cov     hull
+SPORES           1.192     exact |   0.0406   0.0732   0.0162
+HSJ              0.224     exact |   0.0773   0.1039   0.0321
+alm_lbfgs        1.729    0.0145 |   0.0510   0.0925   0.0271
+penalty          0.942    0.0126 |   0.0498   0.0885   0.0270
+pdhg             0.431    0.0298 |   0.0019   0.0038   0.0000
+oracle           0.537    0.0278 |   0.0271   0.0635   0.0079
+
+=== backend: highs ===
+Projection successful! Max distance from L-BFGS guess: 0.33844639641935303
+Projection successful! Max percentage deviation: 0.6499038024350989
+Projection successful! Max distance from L-BFGS guess: 0.04786253733183621
+Projection successful! Max percentage deviation: 8.971372859672934
+Projection successful! Max distance from L-BFGS guess: 0.22958182613111866
+Projection successful! Max percentage deviation: 5.635995191067238
+Projection successful! Max distance from L-BFGS guess: 0.20596142624403502
+Projection successful! Max percentage deviation: 8.718968731086807
+Projection successful! Max distance from L-BFGS guess: 0.20071739471012506
+Projection successful! Max percentage deviation: 0.06721292687709775
+Projection successful! Max distance from L-BFGS guess: 0.20386674188168818
+Projection successful! Max percentage deviation: 0.3403143690241989
+Projection successful! Max distance from L-BFGS guess: 1.7840680464176195e-5
+Projection successful! Max percentage deviation: 2.9775399234979933e-5
+Projection successful! Max distance from L-BFGS guess: 1.944226145061544e-6
+Projection successful! Max percentage deviation: 1.9442261450615441
+Projection successful! Max distance from L-BFGS guess: 1.7593879255706213e-6
+Projection successful! Max percentage deviation: 0.7162919778648088
+Projection successful! Max distance from L-BFGS guess: 3.0677936365654367e-6
+Projection successful! Max percentage deviation: 0.600543110092074
+Projection successful! Max distance from L-BFGS guess: 1.2579798983836099e-5
+Projection successful! Max percentage deviation: 3.7916360337116916e-5
+Projection successful! Max distance from L-BFGS guess: 1.130864591601396e-6
+Projection successful! Max percentage deviation: 0.44722814159474245
+Projection successful! Max distance from L-BFGS guess: 2.0882380371345377e-5
+Projection successful! Max percentage deviation: 3.8209909606856124e-5
+Projection successful! Max distance from L-BFGS guess: 4.005648808889869e-6
+Projection successful! Max percentage deviation: 4.00564880888987
+Projection successful! Max distance from L-BFGS guess: 6.46960080752379e-6
+Projection successful! Max percentage deviation: 2.401082766916841
+Projection successful! Max distance from L-BFGS guess: 3.364735713440773e-5
+Projection successful! Max percentage deviation: 33.647357134407734
+Projection successful! Max distance from L-BFGS guess: 1.2135491859410763e-5
+Projection successful! Max percentage deviation: 9.805958908376458e-6
+Projection successful! Max distance from L-BFGS guess: 3.768788321661885e-6
+Projection successful! Max percentage deviation: 1.2454159443698938
+Projection successful! Max distance from L-BFGS guess: 2.0882380371345377e-5
+Projection successful! Max percentage deviation: 3.8209909606856124e-5
+Projection successful! Max distance from L-BFGS guess: 4.005648808889869e-6
+Projection successful! Max percentage deviation: 4.00564880888987
+Projection successful! Max distance from L-BFGS guess: 6.46960080752379e-6
+Projection successful! Max percentage deviation: 2.401082766916841
+Projection successful! Max distance from L-BFGS guess: 3.364735713440773e-5
+Projection successful! Max percentage deviation: 33.647357134407734
+Projection successful! Max distance from L-BFGS guess: 1.2135491859410763e-5
+Projection successful! Max percentage deviation: 9.805958908376458e-6
+Projection successful! Max distance from L-BFGS guess: 3.768788321661885e-6
+Projection successful! Max percentage deviation: 1.2454159443698938
+Projection successful! Max distance from L-BFGS guess: 0.9135923492040607
+Projection successful! Max percentage deviation: 3.0086731141026144
+Projection successful! Max distance from L-BFGS guess: 0.3443134318996872
+Projection successful! Max percentage deviation: 135933.77967882596
+Projection successful! Max distance from L-BFGS guess: 0.2400203888491621
+Projection successful! Max percentage deviation: 6.64748941124646
+Projection successful! Max distance from L-BFGS guess: 0.20183919707623676
+Projection successful! Max percentage deviation: 161492.25816641835
+Projection successful! Max distance from L-BFGS guess: 0.20265367205147822
+Projection successful! Max percentage deviation: 0.0843968289569131
+Projection successful! Max distance from L-BFGS guess: 0.2055011621402567
+Projection successful! Max percentage deviation: 0.10622721529166455
+Projection successful! Max distance from L-BFGS guess: 0.007004824592782399
+Projection successful! Max percentage deviation: 0.007120861642112126
+Projection successful! Max distance from L-BFGS guess: 0.0014802170352163913
+Projection successful! Max percentage deviation: 13.087440869401163
+Projection successful! Max distance from L-BFGS guess: 0.0023830216461537823
+Projection successful! Max percentage deviation: 4.757240646874906
+Projection successful! Max distance from L-BFGS guess: 0.0015954063418677222
+Projection successful! Max percentage deviation: 1236.6449567116529
+Projection successful! Max distance from L-BFGS guess: 0.002008419187745858
+Projection successful! Max percentage deviation: 0.0008887537835777147
+Projection successful! Max distance from L-BFGS guess: 0.001832637551989258
+Projection successful! Max percentage deviation: 0.003233702622042793
+Projection successful! Max distance from L-BFGS guess: 1.5608858650040247e-10
+Projection successful! Max percentage deviation: 1.567626804752346e-10
+Projection successful! Max distance from L-BFGS guess: 5.515048478371285e-5
+Projection successful! Max percentage deviation: 55.150484783712855
+Projection successful! Max distance from L-BFGS guess: 4.113109475117335e-5
+Projection successful! Max percentage deviation: 8.030038389312145
+Projection successful! Max distance from L-BFGS guess: 4.0418402965943333e-5
+Projection successful! Max percentage deviation: 40.418402965943336
+Projection successful! Max distance from L-BFGS guess: 1.807887173299605e-10
+Projection successful! Max percentage deviation: 6.56419223892411e-11
+Projection successful! Max distance from L-BFGS guess: 1.5584884494046491e-9
+Projection successful! Max percentage deviation: 2.873146056750772e-9
+Projection successful! Max distance from L-BFGS guess: 1.5608858650040247e-10
+Projection successful! Max percentage deviation: 1.567626804752346e-10
+Projection successful! Max distance from L-BFGS guess: 5.515048478371285e-5
+Projection successful! Max percentage deviation: 55.150484783712855
+Projection successful! Max distance from L-BFGS guess: 4.113109475117335e-5
+Projection successful! Max percentage deviation: 8.030038389312145
+Projection successful! Max distance from L-BFGS guess: 4.0418402965943333e-5
+Projection successful! Max percentage deviation: 40.418402965943336
+Projection successful! Max distance from L-BFGS guess: 1.807887173299605e-10
+Projection successful! Max percentage deviation: 6.56419223892411e-11
+Projection successful! Max distance from L-BFGS guess: 1.5584884494046491e-9
+Projection successful! Max percentage deviation: 2.873146056750772e-9
+Projection successful! Max distance from L-BFGS guess: 3.5074165793957945e-12
+Projection successful! Max percentage deviation: 9.664711214788895e-13
+Projection successful! Max distance from L-BFGS guess: 5.324185536892401e-12
+Projection successful! Max percentage deviation: 1.506549226429846e-12
+Projection successful! Max distance from L-BFGS guess: 6.568967592102126e-12
+Projection successful! Max percentage deviation: 2.593740704977888e-12
+Projection successful! Max distance from L-BFGS guess: 7.957634551303272e-12
+Projection successful! Max percentage deviation: 2.32774546302166e-12
+Projection successful! Max distance from L-BFGS guess: 7.0037309285453375e-12
+Projection successful! Max percentage deviation: 2.0839339448459324e-12
+Projection successful! Max distance from L-BFGS guess: 6.249223361010081e-12
+Projection successful! Max percentage deviation: 1.8062154263734142e-12
+Projection successful! Max distance from L-BFGS guess: 2.8420021891406577e-10
+Projection successful! Max percentage deviation: 7.406832815308289e-11
+Projection successful! Max distance from L-BFGS guess: 2.737277071673816e-10
+Projection successful! Max percentage deviation: 5.86645076255592e-11
+Projection successful! Max distance from L-BFGS guess: 3.5977265611109033e-10
+Projection successful! Max percentage deviation: 9.073048854438512e-11
+Projection successful! Max distance from L-BFGS guess: 6.437463895281326e-10
+Projection successful! Max percentage deviation: 1.725109685293948e-10
+Projection successful! Max distance from L-BFGS guess: 3.113873603410866e-10
+Projection successful! Max percentage deviation: 8.78038914697378e-11
+Projection successful! Max distance from L-BFGS guess: 1.8266899104446566e-10
+Projection successful! Max percentage deviation: 5.28672829391235e-11
+Projection successful! Max distance from L-BFGS guess: 9.96522864227245e-11
+Projection successful! Max percentage deviation: 3.32803030492871e-11
+Projection successful! Max distance from L-BFGS guess: 2.247730890303501e-10
+Projection successful! Max percentage deviation: 5.0762617450616015e-11
+Projection successful! Max distance from L-BFGS guess: 9.14530673412628e-11
+Projection successful! Max percentage deviation: 1.8861364191947897e-11
+Projection successful! Max distance from L-BFGS guess: 5.260947233409752e-11
+Projection successful! Max percentage deviation: 1.1164068744809091e-11
+Projection successful! Max distance from L-BFGS guess: 8.522427208390582e-11
+Projection successful! Max percentage deviation: 1.9190414659319526e-11
+Projection successful! Max distance from L-BFGS guess: 6.868461355225008e-11
+Projection successful! Max percentage deviation: 1.6038154382435797e-11
+Projection successful! Max distance from L-BFGS guess: 1.120221027051116e-9
+Projection successful! Max percentage deviation: 7.583901407301617e-10
+Projection successful! Max distance from L-BFGS guess: 2.3593571540914127e-10
+Projection successful! Max percentage deviation: 5.183602043020928e-11
+Projection successful! Max distance from L-BFGS guess: 2.169496582382635e-9
+Projection successful! Max percentage deviation: 4.529478263654854e-10
+Projection successful! Max distance from L-BFGS guess: 3.01147107251154e-9
+Projection successful! Max percentage deviation: 6.220774521429986e-10
+Projection successful! Max distance from L-BFGS guess: 1.78091941194225e-9
+Projection successful! Max percentage deviation: 3.680040548362117e-10
+Projection successful! Max distance from L-BFGS guess: 3.2497347035587154e-9
+Projection successful! Max percentage deviation: 7.004158039589823e-10
+Projection successful! Max distance from L-BFGS guess: 2.373650528777206e-5
+Projection successful! Max percentage deviation: 23.73650528777206
+Projection successful! Max distance from L-BFGS guess: 3.429285214980322e-5
+Projection successful! Max percentage deviation: 34.29285214980322
+Projection successful! Max distance from L-BFGS guess: 3.429285214980322e-5
+Projection successful! Max percentage deviation: 34.29285214980322
+Projection successful! Max distance from L-BFGS guess: 3.429285214980322e-5
+Projection successful! Max percentage deviation: 34.29285214980322
+Projection successful! Max distance from L-BFGS guess: 3.429285214980322e-5
+Projection successful! Max percentage deviation: 34.29285214980322
+Projection successful! Max distance from L-BFGS guess: 3.429285214980322e-5
+Projection successful! Max percentage deviation: 34.29285214980322
+Projection successful! Max distance from L-BFGS guess: 2.117559236047839e-5
+Projection successful! Max percentage deviation: 1.0108777211509937e-5
+Projection successful! Max distance from L-BFGS guess: 3.5390166241675975e-5
+Projection successful! Max percentage deviation: 35.39016624167598
+Projection successful! Max distance from L-BFGS guess: 2.4851678424475665e-5
+Projection successful! Max percentage deviation: 5.953167903390197e-6
+Projection successful! Max distance from L-BFGS guess: 1.551954806622291e-5
+Projection successful! Max percentage deviation: 3.650879543998154e-6
+Projection successful! Max distance from L-BFGS guess: 1.3873544911113811e-5
+Projection successful! Max percentage deviation: 3.350365635850426e-6
+Projection successful! Max distance from L-BFGS guess: 1.5040087652629097e-5
+Projection successful! Max percentage deviation: 3.727528897529784e-6
+Projection successful! Max distance from L-BFGS guess: 3.07774820655915e-5
+Projection successful! Max percentage deviation: 8.61366715681361e-5
+Projection successful! Max distance from L-BFGS guess: 4.6722091487330716e-5
+Projection successful! Max percentage deviation: 46.722091487330715
+Projection successful! Max distance from L-BFGS guess: 2.4660467679460396e-5
+Projection successful! Max percentage deviation: 9.048682768056713e-6
+Projection successful! Max distance from L-BFGS guess: 2.934530146170289e-5
+Projection successful! Max percentage deviation: 7.315849469861852e-6
+Projection successful! Max distance from L-BFGS guess: 1.3978216251153697e-5
+Projection successful! Max percentage deviation: 3.624273534294863e-6
+Projection successful! Max distance from L-BFGS guess: 2.499151033052982e-5
+Projection successful! Max percentage deviation: 5.802710518920932e-6
+method         time(s)       dev |   meanPW      cov     hull
+SPORES           1.541     exact |   0.0406   0.0732   0.0162
+HSJ              0.851     exact |   0.0773   0.1039   0.0321
+alm_lbfgs        2.457    0.0137 |   0.0503   0.0918   0.0269
+penalty          1.500    0.0129 |   0.0498   0.0889   0.0271
+pdhg             0.752    0.0298 |   0.0019   0.0038   0.0000
+oracle           4.110    0.0278 |   0.0271   0.0635   0.0079
+
+Wrote plots + CSVs to C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\benchmark

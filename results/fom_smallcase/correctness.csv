@@ -1,0 +1,9 @@
+case,nvars,method,time_s,iters,infeas,obj_s,exact_obj_s,miss_pct,sol_dist,dominated,pass
+minimal_lp,2,penalty,0.0001,1,0.000e+00,0,3.52805e-10,0.0000,3.9780e-03,yes,PASS
+minimal_lp,2,alm_lbfgs,0.0000,1,0.000e+00,0,3.52805e-10,0.0000,3.9780e-03,yes,PASS
+minimal_lp,2,pdhg,0.0017,256,0.000e+00,0,3.52805e-10,0.0000,7.2369e-04,yes,PASS
+minimal_lp,2,scs,0.0061,0,0.000e+00,1.66562e-08,3.52805e-10,0.0000,4.8811e-03,no,PASS
+synth_dense,80,penalty,0.1790,12,1.572e-07,12.0458,12.0325,0.0639,3.4643e-03,no,PASS
+synth_dense,80,alm_lbfgs,0.0433,8,1.963e-07,12.0325,12.0325,0.0000,2.5864e-08,no,PASS
+synth_dense,80,pdhg,0.2046,8960,2.344e-07,12.0325,12.0325,0.0001,1.9668e-07,no,PASS
+synth_dense,80,scs,0.5263,0,6.665e-08,12.0325,12.0325,0.0000,4.6217e-09,no,PASS

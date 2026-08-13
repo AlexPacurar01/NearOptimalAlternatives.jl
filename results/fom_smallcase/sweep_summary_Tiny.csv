@@ -1,0 +1,5 @@
+case,method,n_solves,total_iters,mean_iters,total_time_s,max_infeas,frac_front_dominated_by_exact
+Tiny,alm_lbfgs,7,39,5.6,0.7063,1.70e-05,0.125
+Tiny,penalty,7,39,5.6,0.8034,3.91e-05,0.500
+Tiny,pdhg,6,60000,10000.0,2.3305,9.93e-06,0.714
+Tiny,scs,8,0,0.0,2.6164,NaN,0.125

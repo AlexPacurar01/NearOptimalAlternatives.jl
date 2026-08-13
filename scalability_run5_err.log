@@ -1,0 +1,37 @@
+Precompiling packages...
+   8262.7 ms  ✓ NearOptimalAlternatives
+  1 dependency successfully precompiled in 25 seconds. 300 already precompiled.
+[ Info: Setting up NearOptimalAlternatives problem with 745 target variables.
+ERROR: LoadError: FieldError: type Optim.LBFGSState has no field `iteration`, available fields: `x`, `g_x`, `f_x`, `x_previous`, `g_x_previous`, `rho`, `dx_history`, `dg_history`, `dx`, `dg`, `u`, `f_x_previous`, `twoloop_q`, `twoloop_alpha`, `pseudo_iteration`, `s`, `x_ls`, `alpha`
+Stacktrace:
+  [1] getproperty
+    @ .\Base_compiler.jl:54 [inlined]
+  [2] (::NearOptimalAlternatives.GradientMGA.var"#tracking_callback#run_lbfgs_mga##5"{Vector{Float64}, Float64, Vector{Float64}, Vector{Float64}, Int64, Float64, Int64})(state::Optim.LBFGSState{Vector{Float64}, Vector{Vector{Float64}}, Vector{Vector{Float64}}, Float64, Vector{Float64}})
+    @ NearOptimalAlternatives.GradientMGA C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\algorithms\LBFGS-Local-Search.jl:366
+  [3] optimize(d::NLSolversBase.OnceDifferentiable{Float64, Vector{Float64}, Float64, Vector{Float64}}, initial_x::Vector{Float64}, method::Optim.LBFGS{Nothing, LineSearches.InitialStatic{Float64}, LineSearches.HagerZhang{Float64, Base.RefValue{Bool}}, Returns{Nothing}}, options::Optim.Options{Float64, NearOptimalAlternatives.GradientMGA.var"#tracking_callback#run_lbfgs_mga##5"{Vector{Float64}, Float64, Vector{Float64}, Vector{Float64}, Int64, Float64, Int64}}, state::Optim.LBFGSState{Vector{Float64}, Vector{Vector{Float64}}, Vector{Vector{Float64}}, Float64, Vector{Float64}})
+    @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:67
+  [4] optimize(d::NLSolversBase.OnceDifferentiable{Float64, Vector{Float64}, Float64, Vector{Float64}}, initial_x::Vector{Float64}, method::Optim.LBFGS{Nothing, LineSearches.InitialStatic{Float64}, LineSearches.HagerZhang{Float64, Base.RefValue{Bool}}, Returns{Nothing}}, options::Optim.Options{Float64, NearOptimalAlternatives.GradientMGA.var"#tracking_callback#run_lbfgs_mga##5"{Vector{Float64}, Float64, Vector{Float64}, Vector{Float64}, Int64, Float64, Int64}})
+    @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:45
+  [5] optimize(f::NLSolversBase.InplaceObjective{NearOptimalAlternatives.GradientMGA.var"#fg!#run_lbfgs_mga##4"{Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}}, Nothing, Nothing, Nothing, Nothing}, x0::Vector{Float64}, method::Optim.LBFGS{Nothing, LineSearches.InitialStatic{Float64}, LineSearches.HagerZhang{Float64, Base.RefValue{Bool}}, Returns{Nothing}}, options::Optim.Options{Float64, NearOptimalAlternatives.GradientMGA.var"#tracking_callback#run_lbfgs_mga##5"{Vector{Float64}, Float64, Vector{Float64}, Vector{Float64}, Int64, Float64, Int64}}; inplace::Bool, autodiff::ADTypes.AutoFiniteDiff{Val{:central}, Val{:central}, Val{:hcentral}, Nothing, Nothing, Bool})
+    @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\interface.jl:225
+  [6] optimize(f::NLSolversBase.InplaceObjective{NearOptimalAlternatives.GradientMGA.var"#fg!#run_lbfgs_mga##4"{Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}}, Nothing, Nothing, Nothing, Nothing}, x0::Vector{Float64}, method::Optim.LBFGS{Nothing, LineSearches.InitialStatic{Float64}, LineSearches.HagerZhang{Float64, Base.RefValue{Bool}}, Returns{Nothing}}, options::Optim.Options{Float64, NearOptimalAlternatives.GradientMGA.var"#tracking_callback#run_lbfgs_mga##5"{Vector{Float64}, Float64, Vector{Float64}, Vector{Float64}, Int64, Float64, Int64}})
+    @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\interface.jl:216
+  [7] run_lbfgs_mga(model::Model, x_start::Vector{Float64}, w::Vector{Float64}, actual_max_cost::Float64, repair::Bool, A_in::SparseArrays.SparseMatrixCSC{Float64, Int64}, b_in::Vector{Float64}, A_eq::SparseArrays.SparseMatrixCSC{Float64, Int64}, b_eq::Vector{Float64}, vars::Vector{VariableRef}, target_indices::Vector{Int64})
+    @ NearOptimalAlternatives.GradientMGA C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\algorithms\LBFGS-Local-Search.jl:379
+  [8] lbfgs_search_alternatives(model::Model, target_vars::Vector{VariableRef}, n_alternatives::Int64, eps::Float64, max_allowed_cost::Float64, repair_solution::Bool, optimizer_search::Nothing)
+    @ NearOptimalAlternatives C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\alternative-metaheuristics.jl:412
+  [9] lbfgs_search_alternatives
+    @ C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\alternative-metaheuristics.jl:355 [inlined]
+ [10] generate_alternatives_lbfgs(model::Model, n_alternatives::Int64; target_symbols::Vector{Symbol}, target_vars::Vector{VariableRef}, operational_recovery::Bool)
+    @ NearOptimalAlternatives C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\generate-alternatives.jl:235
+ [11] generate_alternatives_lbfgs
+    @ C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\generate-alternatives.jl:187 [inlined]
+ [12] top-level scope
+    @ C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\scalability_test.jl:241
+ [13] include(mod::Module, _path::String)
+    @ Base .\Base.jl:306
+ [14] exec_options(opts::Base.JLOptions)
+    @ Base .\client.jl:317
+ [15] _start()
+    @ Base .\client.jl:550
+in expression starting at C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\scalability_test.jl:128

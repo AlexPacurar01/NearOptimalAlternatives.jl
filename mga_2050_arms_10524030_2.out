@@ -1,0 +1,10 @@
+[Mon Jul 27 12:48:22 CEST 2026] task 2: ensuring project is instantiated
+[Mon Jul 27 12:48:56 CEST 2026] task 2 -> algorithm-switch arms (N=10)
+[2026-07-27T12:49:04.020] 2050 Investment basis arms: backend=gurobi threads=16
+[2026-07-27T12:49:04.165] loading cached baseline from results/2050_investment/baseline/base_solution_10516507.bin ...
+  grids N=[10] eps=0.1 repeats=1 -> results/2050_investment/arms
+Set parameter TSPort to value 27099
+Set parameter TokenServer to value "flexserv-x1.tudelft.nl"
+  model: 11699666 vars, cached min cost 3.80044e11
+slurmstepd: error: *** STEP 10524030.0 ON mem004 CANCELLED AT 2026-07-28T08:48:33 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 10524030 ON mem004 CANCELLED AT 2026-07-28T08:48:33 DUE TO TIME LIMIT ***

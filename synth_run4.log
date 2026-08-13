@@ -1,0 +1,229 @@
+Precompiling packages...
+  19799.0 ms  ✓ NearOptimalAlternatives
+  1 dependency successfully precompiled in 80 seconds. 300 already precompiled.
+Base objective: 2061.6586186161157
+Base investments: [9.47691506278428, 0.0, 5.4603521407815325, 10.41568428057458, 0.0, 7.592495912795435, 0.0, 11.732125837897547]
+[ Info: Setting up NearOptimalAlternatives problem with 8 target variables.
+Your model's variable symbols are: [:dispatch, :assets_investment, :balance, :capacity]
+[ Info: Loaded cached LP utopian solution from C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\data\lp_utopian_cache.bin
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 1: x_s=[9.477, 0.0, 5.46, 10.42, 0.0, 7.592, 0.0, 11.73] | total_cost=2061.66 | budget=2267.82 | g=[0.4274, 0.9631, 1.201, -0.9094, 4.159, 0.6768, 0.9198, 2.113] | mu_s=0.0486
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 2: x_s=[7.108, 3.119e-8, 4.095, 7.812, 3.119e-8, 5.865, 3.119e-8, 9.536] | total_cost=2084.28 | budget=2267.82 | g=[-7.855, -3.691, -7.863, -10.68, 0.03064, -9.741, -8.221, -13.06] | mu_s=0.0486
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 3: x_s=[5.331, 0.4046, 3.493, 5.968, 2.339e-8, 5.205, 0.9012, 8.771] | total_cost=2148.65 | budget=2267.82 | g=[-17.76, -11.65, -18.84, -20.74, -7.354, -19.45, -16.8, -27.3] | mu_s=0.0486
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 4: x_s=[4.998, 0.6163, 3.469, 5.601, 0.1337, 5.126, 1.207, 8.718] | total_cost=2157.03 | budget=2267.82 | g=[-17.3, -11.19, -18.39, -20.74, -6.896, -18.99, -16.34, -26.84] | mu_s=0.0486
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 5: x_s=[4.841, 0.7235, 3.461, 5.426, 0.2003, 5.091, 1.362, 8.698] | total_cost=2160.61 | budget=2267.82 | g=[-17.3, -11.19, -19.01, -21.37, -6.896, -19.62, -16.34, -27.47] | mu_s=0.0486
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+┌ Warning: Initial position cannot be on the boundary of the box. Moving elements to the interior.
+│ Element indices affected: [4]
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\solvers\constrained\fminbox.jl:474
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 6: x_s=[4.804, 0.7496, 3.46, 5.388, 0.2164, 5.083, 1.4, 8.694] | total_cost=2161.36 | budget=2267.82 | g=[-17.3, -11.19, -19.01, -21.37, -6.896, -19.62, -16.34, -27.47] | mu_s=0.0486
+┌ Warning: Failed to achieve finite new evaluation point, using alpha=0
+└ @ LineSearches C:\Users\pacurarav\.julia\packages\LineSearches\lihz0\src\hagerzhang.jl:156
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+┌ Warning: Initial position cannot be on the boundary of the box. Moving elements to the interior.
+│ Element indices affected: [1]
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\solvers\constrained\fminbox.jl:474
+┌ Warning: Terminated early due to NaN in gradient.
+└ @ Optim C:\Users\pacurarav\.julia\packages\Optim\DtV5C\src\multivariate\optimize\optimize.jl:136
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Structural master (8 investment vars, 6 cuts): obj=12.1049 | LP utopian (structural)=4.67857 | gap=158.73%
+[ Info: Before recovery: obj=12.1049 | gap to LP utopian=158.73%
+Projection successful! Max distance from L-BFGS guess: 4.188527123694108e-6
+Projection successful! Max percentage deviation: 1.9346599017365655e-5
+[ Info: After  recovery: obj=12.1049 | gap=158.73%
+[ Info: Comparison plot saved to C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\alm_trajectory.png
+
+Alternative investments: [4.8034881798786655, 0.7497088249527504, 3.460038633469263, 5.387543998531857, 0.21650359082178303, 5.08258286797828, 1.4005491545325155, 8.693813970173862]
+Alternative objective (full model): 2267.8244804777282
+
+=== VALIDATION ===
+LP utopian wᵀx (full model):     4.678574154313509
+Recovered  wᵀx (full model):     12.104903241320965
+Gap to LP utopian:                158.7306%
+ERROR: LoadError: ArgumentError: reducing over an empty collection is not allowed; consider supplying `init` to the reducer
+Stacktrace:
+  [1] _empty_reduce_error()
+    @ Base .\reduce.jl:311
+  [2] mapreduce_empty(f::Function, op::Base.BottomRF{typeof(Base.add_sum)}, T::Type)
+    @ Base .\reduce.jl:313
+  [3] reduce_empty(op::Base.MappingRF{var"#36#37", Base.BottomRF{typeof(Base.add_sum)}}, ::Type{VariableRef})
+    @ Base .\reduce.jl:350
+  [4] reduce_empty(op::Base.FilteringRF{var"#38#39", Base.MappingRF{var"#36#37", Base.BottomRF{typeof(Base.add_sum)}}}, ::Type{VariableRef})
+    @ Base .\reduce.jl:351
+  [5] reduce_empty_iter
+    @ .\reduce.jl:373 [inlined]
+  [6] reduce_empty_iter
+    @ .\reduce.jl:372 [inlined]
+  [7] foldl_impl
+    @ .\reduce.jl:41 [inlined]
+  [8] mapfoldl_impl
+    @ .\reduce.jl:36 [inlined]
+  [9] mapfoldl
+    @ .\reduce.jl:167 [inlined]
+ [10] mapreduce
+    @ .\reduce.jl:299 [inlined]
+ [11] sum
+    @ .\reduce.jl:524 [inlined]
+ [12] sum(a::Base.Generator{Base.Iterators.Filter{var"#38#39", Vector{VariableRef}}, var"#36#37"})
+    @ Base .\reduce.jl:553
+ [13] top-level scope
+    @ C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\synthetic_test.jl:113
+ [14] include(mod::Module, _path::String)
+    @ Base .\Base.jl:306
+ [15] exec_options(opts::Base.JLOptions)
+    @ Base .\client.jl:317
+ [16] _start()
+    @ Base .\client.jl:550
+in expression starting at C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\synthetic_test.jl:113

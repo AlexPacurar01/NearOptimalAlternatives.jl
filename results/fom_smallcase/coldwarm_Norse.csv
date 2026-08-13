@@ -1,0 +1,11 @@
+case,method,start,total_time_s,mean_iters,max_viol,frac_dominated
+Norse,alm_lbfgs,cold,42.4619,60.0,1.097e+04,1.000
+Norse,alm_lbfgs,warm,41.6950,60.0,1.097e+04,1.000
+Norse,penalty,cold,42.8652,60.0,1.144e+04,1.000
+Norse,penalty,warm,43.0169,60.0,1.144e+04,1.000
+Norse,pdhg,cold,6.1468,20000.0,5.219e+04,0.000
+Norse,pdhg,warm,5.7565,20000.0,5.163e+04,0.667
+Norse,scs,cold,1364.3666,0.0,3.712e+03,0.000
+Norse,scs,warm,1341.7630,0.0,3.712e+03,0.000
+Norse,barrier,cold,8.5505,0.0,8.586e-10,0.000
+Norse,barrier,warm,9.3408,0.0,6.430e-08,0.333

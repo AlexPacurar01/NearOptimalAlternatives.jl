@@ -1,0 +1,66 @@
+Precompiling packages...
+  11086.1 ms  ✓ NearOptimalAlternatives
+  1 dependency successfully precompiled in 15 seconds. 300 already precompiled.
+Base objective: 2061.6586186161157
+Base investments: [9.47691506278428, 0.0, 5.4603521407815325, 10.41568428057458, 0.0, 7.592495912795435, 0.0, 11.732125837897547]
+[ Info: Setting up NearOptimalAlternatives problem with 8 target variables.
+Your model's variable symbols are: [:dispatch, :assets_investment, :balance, :capacity]
+[ Info: Loaded cached LP utopian solution from C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\data\lp_utopian_cache.bin
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+[ Info: Benders iteration 1: x_s=[9.477, 0.0, 5.46, 10.42, 0.0, 7.592, 0.0, 11.73] | total_cost=2061.66 | budget=2267.82 | g=[0.4274, 0.9631, 1.201, -0.9094, 4.159, 0.6768, 0.9198, 2.113]
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+┌ Warning: Operational subproblem infeasible at iteration 2; keeping previous point.
+└ @ NearOptimalAlternatives.GradientMGA C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\src\algorithms\LBFGS-Local-Search.jl:433
+[ Info: Structural master (8 investment vars, 1 cuts): obj=20.2361 | LP utopian (structural)=4.67857 | gap=332.53%
+[ Info: Before recovery: obj=20.2361 | gap to LP utopian=332.53%
+Projection successful! Max distance from L-BFGS guess: 4.208197447770426e-6
+Projection successful! Max percentage deviation: 4.208197447770426
+[ Info: After  recovery: obj=20.2361 | gap=332.53%
+[ Info: Comparison plot saved to C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\alm_trajectory.png
+
+Alternative investments: [9.47691331898722, 3.799272778471523e-6, 5.460351681468308, 10.41568252702308, 3.283080134863035e-6, 7.592494538345602, 4.208197447770426e-6, 11.732123994564269]
+Alternative objective (full model): 2267.8244804777264
+
+=== VALIDATION ===
+LP utopian wᵀx (full model):     4.678574154313509
+Recovered  wᵀx (full model):     20.236092236317056
+Gap to LP utopian:                332.5269%
+ERROR: LoadError: ArgumentError: reducing over an empty collection is not allowed; consider supplying `init` to the reducer
+Stacktrace:
+  [1] _empty_reduce_error()
+    @ Base .\reduce.jl:311
+  [2] mapreduce_empty(f::Function, op::Base.BottomRF{typeof(Base.add_sum)}, T::Type)
+    @ Base .\reduce.jl:313
+  [3] reduce_empty(op::Base.MappingRF{var"#36#37", Base.BottomRF{typeof(Base.add_sum)}}, ::Type{VariableRef})
+    @ Base .\reduce.jl:350
+  [4] reduce_empty(op::Base.FilteringRF{var"#38#39", Base.MappingRF{var"#36#37", Base.BottomRF{typeof(Base.add_sum)}}}, ::Type{VariableRef})
+    @ Base .\reduce.jl:351
+  [5] reduce_empty_iter
+    @ .\reduce.jl:373 [inlined]
+  [6] reduce_empty_iter
+    @ .\reduce.jl:372 [inlined]
+  [7] foldl_impl
+    @ .\reduce.jl:41 [inlined]
+  [8] mapfoldl_impl
+    @ .\reduce.jl:36 [inlined]
+  [9] mapfoldl
+    @ .\reduce.jl:167 [inlined]
+ [10] mapreduce
+    @ .\reduce.jl:299 [inlined]
+ [11] sum
+    @ .\reduce.jl:524 [inlined]
+ [12] sum(a::Base.Generator{Base.Iterators.Filter{var"#38#39", Vector{VariableRef}}, var"#36#37"})
+    @ Base .\reduce.jl:553
+ [13] top-level scope
+    @ C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\synthetic_test.jl:113
+ [14] include(mod::Module, _path::String)
+    @ Base .\Base.jl:306
+ [15] exec_options(opts::Base.JLOptions)
+    @ Base .\client.jl:317
+ [16] _start()
+    @ Base .\client.jl:550
+in expression starting at C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\synthetic_test.jl:113

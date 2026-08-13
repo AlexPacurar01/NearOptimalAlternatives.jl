@@ -1,0 +1,50 @@
+Benchmark 5h: THREADS=8 N_ALTS=2 backend=gurobi
+== SPORES (exact reference) ==
+  building + solving fresh 5h model for Spores ...
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+   SPORES: 321.4s
+== HSJ (exact) ==
+  building + solving fresh 5h model for HSJ ...
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+   HSJ: 4731.5s
+== building base 5h model for gradient methods ==
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+  running alm_lbfgs (budget 4) ...
+Projection successful! Max distance from L-BFGS guess: 121.57953175319321
+Projection successful! Max percentage deviation: 2.0512991895331424e7
+Projection successful! Max distance from L-BFGS guess: 106.90976151827857
+Projection successful! Max percentage deviation: 1.2111441155930487e7
+   alm_lbfgs: 1199.0s | dev 0.2714
+  running penalty (budget 4) ...
+Projection successful! Max distance from L-BFGS guess: 185.50838755749962
+Projection successful! Max percentage deviation: 3.798331597411025e7
+Projection successful! Max distance from L-BFGS guess: 187.37145091277762
+Projection successful! Max percentage deviation: 2.206632270274489e7
+   penalty: 1161.4s | dev 0.2949
+  running pdhg (budget 1000) ...
+Projection successful! Max distance from L-BFGS guess: 191.31570672170588
+Projection successful! Max percentage deviation: 1.736710042609557e7
+Projection successful! Max distance from L-BFGS guess: 191.308348316525
+Projection successful! Max percentage deviation: 1.736707760047635e7
+   pdhg: 493.5s | dev 0.2998
+  running oracle (budget 2) ...
+Projection successful! Max distance from L-BFGS guess: 0.00028773992236432925
+Projection successful! Max percentage deviation: 166.31597692502032
+Projection successful! Max distance from L-BFGS guess: 0.00028773992236432925
+Projection successful! Max percentage deviation: 166.31597692502032
+   oracle: 3442.7s | dev 0.3501
+method         time(s)       dev |   meanPW      cov     hull
+SPORES           321.4     exact |   0.0500   0.0059   0.0000
+HSJ             4731.5     exact |   0.2704   0.0842   0.0000
+alm_lbfgs       1199.0    0.2714 |   0.1953   0.0517   0.0000
+penalty         1161.4    0.2949 |   0.2015   0.0507   0.0000
+pdhg             493.5    0.2998 |   0.0001   0.0000   0.0000
+oracle          3442.7    0.3501 |   0.0000   0.0000   0.0000
+
+Wrote plots + CSV to C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\benchmark_5h

@@ -1,0 +1,66 @@
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Set parameter Username
+Set parameter LicenseID to value 2786638
+Academic license - for non-commercial use only - expires 2027-03-03
+Precompiling packages...
+   4217.0 ms  ✓ NearOptimalAlternatives
+  1 dependency successfully precompiled in 27 seconds. 288 already precompiled.
+[2026-07-23T13:59:11.861] spores native-hook: Norse backend=gurobi threads=1
+  N=[2, 5, 10] eps=0.2 repeats=3 -> C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\spores_native_hook
+  N=2   barrier             base(excluded)=  1.674s  spores_total=   1.0118s  per_alt=  0.5059s
+  N=2   warm_primal_simplex base(excluded)=  1.578s  spores_total=   0.6139s  per_alt=  0.3069s
+  N=5   barrier             base(excluded)=  1.736s  spores_total=   2.3420s  per_alt=  0.4684s
+  N=5   warm_primal_simplex base(excluded)=  1.662s  spores_total=   0.6040s  per_alt=  0.1208s
+  N=10  barrier             base(excluded)=  1.523s  spores_total=   4.7213s  per_alt=  0.4721s
+  N=10  warm_primal_simplex base(excluded)=  1.612s  spores_total=   0.6915s  per_alt=  0.0691s
+[2026-07-23T14:00:41.556] done -> C:\Users\pacurarav\Desktop\New folder\NearOptimalAlternatives.jl\results\spores_native_hook\points_norsetest.csv

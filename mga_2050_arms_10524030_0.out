@@ -1,0 +1,16 @@
+[Mon Jul 27 12:36:03 CEST 2026] task 0: ensuring project is instantiated
+[Mon Jul 27 12:37:31 CEST 2026] task 0 -> continuation-vs-SPORES
+[2026-07-27T12:37:47.885] loading cached baseline from results/2050_investment/baseline/base_solution_10516507.bin ...
+[2026-07-27T12:37:48.397] cached C*=3.800438270060242e11  (built in 593.495945536s, solved in 7221.470763171s)
+[2026-07-27T12:37:48.411] building 2050 Investment model (unsolved) ...
+Set parameter TSPort to value 27099
+Set parameter TokenServer to value "flexserv-x1.tudelft.nl"
+2050 Investment: 11699666 vars | 378 investment vars | N_DIR=5 N_BUDGET=6 EPS=0.1
+[   0.0s] base solve SKIPPED (cached) | C*=3.80044e+11
+[9411.1s] SPORES direction 1/5 solved (9373.5s)
+[22250.4s] SPORES direction 2/5 solved (12838.2s)
+[31245.0s] SPORES direction 3/5 solved (8994.3s)
+[41184.6s] SPORES direction 4/5 solved (9938.8s)
+[55715.5s] SPORES direction 5/5 solved (14530.5s)
+slurmstepd: error: *** STEP 10524031.0 ON mem004 CANCELLED AT 2026-07-28T08:36:03 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 10524031 ON mem004 CANCELLED AT 2026-07-28T08:36:03 DUE TO TIME LIMIT ***

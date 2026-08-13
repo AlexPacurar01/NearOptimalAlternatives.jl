@@ -1,0 +1,2 @@
+solver,ndir,t_old,t_new,t_new_solve,n_old,n_new,max_dev,ep_cost,ep_div
+gurobi,5,579.7097,26717.2647,7258.7820,5,24,0.000000e+00,1.753375005e+11,3.357422339e-11
