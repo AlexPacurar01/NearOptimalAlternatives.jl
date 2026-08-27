@@ -19,17 +19,28 @@
 # locally (this machine ran out of RAM just building the JuMP model, before
 # any solve was attempted). Run a build-only pass first to see nvars/ncons
 # and peak RSS cheaply (minutes, not hours) before trusting this job's
-# 20h/250GB request on a full barrier solve:
+# request on a full barrier solve:
 #   sbatch --export=ALL,BASE_2050_BUILD_ONLY=true --time=01:00:00 \
 #     run_dhpc_2050_baseline.slurm
+#
+# Resource request below targets 64 threads - the Education account's
+# MaxCPUsPerJob=64 caps this below the reference machine (48 cores / 96
+# threads, 384GB RAM, barrier + no crossover) the memory numbers come from.
+# Measured peak RSS on that reference machine was ~106GB while building the
+# JuMP model (the dominant peak) and
+# ~21GB once the barrier solve itself is running (the solver's own reported
+# working-set is smaller still, ~7GB), so 120GB is requested here: a bit
+# more than the build-phase peak actually needs, not a full-node request.
+# compute-p2 is DelftBlue's 48-core/384GB partition, matching that reference
+# machine.
 # ===========================================================================
 #SBATCH --job-name="mga-2050-base"
 #SBATCH --output="mga_2050_base_%j.out"
-#SBATCH --partition=memory                  # 750GB/1.5TB nodes - this model is huge
+#SBATCH --partition=compute-p2               # 48-core/384GB nodes, matches the reference config
 #SBATCH --time=20:00:00                      # < 24h Education-account limit
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem-per-cpu=15600                  # ~15.6 GB/core (MB) -> ~250 GB total
+#SBATCH --cpus-per-task=64                   # capped by the Education account's MaxCPUsPerJob=64 (below the reference machine's 96 threads)
+#SBATCH --mem-per-cpu=1920M                  # 64 * 1920M = 120G: peak (build phase) ~106GB + a bit of headroom
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 
 module load julia

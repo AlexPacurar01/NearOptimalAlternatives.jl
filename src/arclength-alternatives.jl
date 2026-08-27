@@ -40,8 +40,22 @@ come from exact LP sensitivity `dx/dB`.)
 
 # Arguments
 Same as [`generate_alternatives_sweep!`](@ref); `n_budget >= 2` (the two endpoints
-are always solved first). Warm starting is not used — arclength solves budgets out
-of order, so there is no monotone previous iterate to seed from.
+are always solved first). By default no warm starting is used — arclength solves
+budgets out of order, so there is no monotone previous iterate to seed from.
+- `point_sink`: an optional `record -> nothing` callback invoked after every
+  point is placed, for live/partial output (e.g. writing incrementally to disk
+  on a long cluster run). Called with a `NamedTuple`
+  `(direction, budget_idx, cost, diversity, gap, solve_time)`.
+- `reconfigure_solver!::Union{Nothing,Function}=nothing`: an optional
+  `model -> restore!` callback, applied once per direction, immediately after
+  that direction's first point succeeds — the same one-shot idea as
+  [`generate_alternatives_optimization!`](@ref)'s `reconfigure_solver!`, but
+  fired per direction instead of once for the whole call. Use it to switch the
+  solver's algorithm (e.g. barrier to dual simplex) so the rest of that
+  direction's (out-of-order) points warm-start off the resulting basis. It
+  should return either `nothing`, or a `model -> nothing` closure that restores
+  the original config; that closure is applied at the start of the *next*
+  direction, right after `update_objective_function!`.
 
 # Result
 An [`AlternativeSolutions`](@ref); each `tags` entry records
@@ -61,6 +75,7 @@ function generate_alternatives_arclength!(
     metric::Distances.SemiMetric = SqEuclidean(),
     fixed_variables::Vector{VariableRef} = VariableRef[],
     point_sink = nothing,
+    reconfigure_solver!::Union{Nothing,Function} = nothing,
 ) where {T<:Union{VariableRef,AffExpr},N}
     if !is_solved_and_feasible(model)
         throw(ArgumentError("JuMP model has not been solved."))
@@ -98,6 +113,7 @@ function generate_alternatives_arclength!(
     offset = full_level - normalized_rhs(bud)
     levelof(g) = is_max ? optimal_value * (1 - g * s) : optimal_value * (1 + g * s)
 
+    restore_next_direction = nothing   # restore closure from the previous direction's reconfigure_solver!
     for k = 1:n_directions
         if k > 1
             @info "Advancing to direction $k/$n_directions."
@@ -108,9 +124,17 @@ function generate_alternatives_arclength!(
                 modeling_method = modeling_method,
                 metric = metric,
             )
+            # Restore after reading value() above: it invalidates the cached
+            # solve, but this direction's first point (below) re-solves anyway.
+            if restore_next_direction !== nothing
+                @info "Restoring solver algorithm for the start of direction $k."
+                restore_next_direction(model)
+                restore_next_direction = nothing
+            end
         end
 
         placed = Ref(0)
+        reconfigured = Ref(false)   # reconfigure_solver! fires once, at the direction's first point
         # Solve at relative gap `g`; on success record the point and return its
         # (cost, diversity) for arclength bookkeeping, else signal failure.
         function solve_and_record(g)
@@ -136,6 +160,10 @@ function generate_alternatives_arclength!(
                     solve_time = st,
                 ),
             )
+            d = _alt_solve_diagnostics(model)
+            @info "alternative_solved" direction = k budget_idx = placed[] solve_time =
+                d.solve_time simplex_iterations = d.simplex_iterations barrier_iterations =
+                d.barrier_iterations status = d.status
             @info "Direction $k/$n_directions: placed point $(placed[])/$n_budget at gap $(round(g, digits = 4)) (diversity $(round(div, sigdigits = 5)))."
             # Optional incremental sink for live/partial output.
             point_sink === nothing || point_sink((
@@ -146,17 +174,28 @@ function generate_alternatives_arclength!(
                 gap = g,
                 solve_time = st,
             ))
+
+            if reconfigure_solver! !== nothing && !reconfigured[]
+                @info "Reconfiguring solver algorithm after the first arclength point."
+                reconfigured[] = true
+                restore_next_direction = reconfigure_solver!(model)
+                # Re-solve to confirm the new algorithm at this same budget -
+                # not a new point, so it isn't recorded.
+                JuMP.optimize!(model)
+                if !is_solved_and_feasible(model)
+                    @warn "Post-reconfigure re-solve at the first arclength point failed ($(termination_status(model)))."
+                end
+            end
+
             return (true, cost, div)
         end
 
         _arclength_sample(solve_and_record, optimality_gap, n_budget)
 
-        # Arclength may finish a direction on a failed midpoint (no solution left
-        # in the model). Re-solve at the full budget so the next direction's SPORES
-        # accumulation (`Spores_update!` reads `value()`) sees a valid solution --
-        # and so directions accumulate from the full-budget alternative, exactly as
-        # the sweep and the classic generator do.
         if k < n_directions
+            # Arclength may finish a direction on a failed midpoint. Re-solve at
+            # the full budget so the next direction's SPORES accumulation sees a
+            # valid solution, same as the sweep and the classic generator.
             set_normalized_rhs(bud, levelof(optimality_gap) - offset)
             JuMP.optimize!(model)
         end
