@@ -14,8 +14,8 @@ function build_synth_arc()
     demand = [5.0, 7.0, 4.0, 6.0]
     n, T = length(cap), length(demand)
     model = JuMP.Model(silent_ipopt_arc())
-    @variable(model, 0 <= inv[i = 1:n] <= cap[i])
-    @variable(model, disp[i = 1:n, t = 1:T] >= 0)
+    @variable(model, 0 <= inv[i=1:n] <= cap[i])
+    @variable(model, disp[i=1:n, t=1:T] >= 0)
     @constraint(model, [i = 1:n, t = 1:T], disp[i, t] <= inv[i])
     @constraint(model, [t = 1:T], sum(disp[i, t] for i = 1:n) >= demand[t])
     @objective(
@@ -211,7 +211,7 @@ end
         # budget can only lower min wᵀx).
         order = sortperm([t.gap for t in tags_k])
         divs = [t.diversity_objective for t in tags_k][order]
-        @test all(divs[i] >= divs[i+1] - 1e-6 for i = 1:length(divs)-1)
+        @test all(divs[i] >= divs[i+1] - 1e-6 for i = 1:(length(divs)-1))
     end
 
     # Every recorded cost is within its budget level.

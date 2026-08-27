@@ -15,8 +15,8 @@ function build_synth()
     demand = [5.0, 7.0, 4.0, 6.0]
     n, T = length(cap), length(demand)
     model = JuMP.Model(silent_ipopt())
-    @variable(model, 0 <= inv[i = 1:n] <= cap[i])
-    @variable(model, disp[i = 1:n, t = 1:T] >= 0)
+    @variable(model, 0 <= inv[i=1:n] <= cap[i])
+    @variable(model, disp[i=1:n, t=1:T] >= 0)
     @constraint(model, [i = 1:n, t = 1:T], disp[i, t] <= inv[i])
     @constraint(model, [t = 1:T], sum(disp[i, t] for i = 1:n) >= demand[t])
     @objective(
