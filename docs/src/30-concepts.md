@@ -7,6 +7,12 @@ Depth = 5
 
 Here we explain in more detail the underlying theoretical concepts of NearOptimalAlternatives.jl. We first discuss the optimization-based approaches and then discuss the evolutionary approaches.
 
+## System Architecture
+
+Both pathways start from the same solved model and near-optimal budget constraint, then diverge: the optimization-based pathway repeatedly re-solves the same JuMP model with a method-specific objective, while the evolutionary pathway translates the problem once into a self-contained search space for a population-based algorithm. Both converge on the same `AlternativeSolutions` output.
+
+![System architecture: optimization-based and evolutionary pathways from a solved model to AlternativeSolutions](assets/architecture.png)
+
 ## [Optimization-based Methods](@id opt-based-methods)
 
 One can directly maximize the distance among the alternatives or minimized the weighted sum of decision variables using a variety of methods listed below.

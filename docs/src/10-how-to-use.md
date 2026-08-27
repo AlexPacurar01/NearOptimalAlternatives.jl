@@ -27,6 +27,12 @@ julia> using NearOptimalAlternatives
 
 Given a solved JuMP model `model` and the variables you want to consider, choose one of the four functions below depending on how you want alternatives to be generated. All of them return an `AlternativeSolutions`; see [Output](@ref io-output) for its structure.
 
+### Which function should I use?
+
+![Decision flowchart for choosing which function to call](assets/decision_flowchart.png)
+
+See [Alternative-Generation Strategies](@ref gen-strategies) for the theory behind the three optimization-based functions, and [Modeling Methods](@ref modeling-methods) for the `modeling_method` each of them also accepts (independently of the choices above).
+
 ### A minimal worked example
 
 Before looking at each function, here is a complete, tiny example you can run and check by hand: a one-constraint "energy system" that meets a fixed demand of `10` units from a cheap and an expensive generator.

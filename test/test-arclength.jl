@@ -28,6 +28,156 @@ function build_synth_arc()
     return model, inv
 end
 
+@testset "Arclength: input validation" begin
+    @testset "Make sure error is thrown when JuMP model is not solved." begin
+        unsolved_model = JuMP.Model(silent_ipopt_arc())
+        @variable(unsolved_model, 0 <= x <= 1)
+        @objective(unsolved_model, Min, x)
+        @test_throws ArgumentError generate_alternatives_arclength!(
+            unsolved_model,
+            0.1,
+            [x],
+            1,
+        )
+    end
+
+    @testset "Make sure error is thrown when incorrect optimality_gap." begin
+        model, inv = build_synth_arc()
+        @test_throws ArgumentError generate_alternatives_arclength!(model, -0.1, inv, 1)
+    end
+
+    @testset "Make sure error is thrown when incorrect n_directions." begin
+        model, inv = build_synth_arc()
+        @test_throws ArgumentError generate_alternatives_arclength!(model, 0.1, inv, 0)
+    end
+
+    @testset "Make sure error is thrown when n_budget < 2." begin
+        model, inv = build_synth_arc()
+        @test_throws ArgumentError generate_alternatives_arclength!(
+            model,
+            0.1,
+            inv,
+            1;
+            n_budget = 1,
+        )
+    end
+end
+
+@testset "Arclength: reconfigure_solver! and its restore closure" begin
+    @testset "reconfigure_solver! fires once per direction; restore fires between directions" begin
+        model, inv = build_synth_arc()
+        n_dir, n_bud, gap = 3, 3, 0.1
+
+        reconfigure_count = Ref(0)
+        restore_count = Ref(0)
+        reconfigure! = m -> begin
+            reconfigure_count[] += 1
+            return mm -> (restore_count[] += 1)
+        end
+
+        result = generate_alternatives_arclength!(
+            model,
+            gap,
+            inv,
+            n_dir;
+            n_budget = n_bud,
+            modeling_method = :Spores,
+            reconfigure_solver! = reconfigure!,
+        )
+
+        # Fires once per direction (guarded by `reconfigured`, reset each direction)...
+        @test reconfigure_count[] == n_dir
+        # ...and the restore closure it returns fires at the start of every
+        # *following* direction, so one fewer time than reconfigure_solver!
+        # itself (the last direction's restore closure is never used).
+        @test restore_count[] == n_dir - 1
+        @test length(result.solutions) > 0
+    end
+
+    @testset "reconfigure_solver! is never called with n_directions == 1" begin
+        model, inv = build_synth_arc()
+        reconfigure_count = Ref(0)
+        reconfigure! = m -> (reconfigure_count[] += 1; return nothing)
+
+        generate_alternatives_arclength!(
+            model,
+            0.1,
+            inv,
+            1;
+            n_budget = 3,
+            modeling_method = :Spores,
+            reconfigure_solver! = reconfigure!,
+        )
+        # A single direction still has a "first point", so reconfigure_solver!
+        # does fire once here - this asserts it fires exactly once, not zero
+        # or more than once, for the simplest possible case.
+        @test reconfigure_count[] == 1
+    end
+
+    @testset "returning nothing from reconfigure_solver! is a no-op restore" begin
+        model, inv = build_synth_arc()
+        reconfigure_count = Ref(0)
+        reconfigure! = m -> begin
+            reconfigure_count[] += 1
+            return nothing   # no restore closure
+        end
+
+        # Should not error even though no restore closure is ever returned.
+        result = generate_alternatives_arclength!(
+            model,
+            0.1,
+            inv,
+            2;
+            n_budget = 3,
+            modeling_method = :Spores,
+            reconfigure_solver! = reconfigure!,
+        )
+        @test reconfigure_count[] == 2
+        @test length(result.solutions) > 0
+    end
+
+    @testset "a reconfigure_solver! that breaks the solver is handled, not thrown" begin
+        model, inv = build_synth_arc()
+        # Force ITERATION_LIMIT on every solve from the reconfigure point onward,
+        # exercising both the post-reconfigure confirm-resolve failure warning
+        # and the regular "budget not solved, skipping" path in the same run.
+        break_solver! = m -> set_optimizer_attribute(m, "max_iter", 0)
+
+        result = @test_logs(
+            (:warn, r"Post-reconfigure re-solve.*failed"),
+            (:warn, r"not solved.*skipping"),
+            match_mode = :any,
+            generate_alternatives_arclength!(
+                model,
+                0.2,
+                inv,
+                1;
+                n_budget = 6,
+                modeling_method = :Spores,
+                reconfigure_solver! = break_solver!,
+            )
+        )
+
+        # Only the first (tight-budget) endpoint is ever recorded: the
+        # reconfigure fires right after it, breaks the solver, and every
+        # solve after that (including the second endpoint) fails.
+        @test length(result.solutions) == 1
+    end
+
+    @testset "no reconfigure_solver! given: neither callback path is touched" begin
+        model, inv = build_synth_arc()
+        result = generate_alternatives_arclength!(
+            model,
+            0.1,
+            inv,
+            2;
+            n_budget = 3,
+            modeling_method = :Spores,
+        )
+        @test length(result.solutions) > 0
+    end
+end
+
 @testset "Arclength: shape, budget feasibility, endpoints, distribution" begin
     model, inv = build_synth_arc()
     n_dir, n_bud, gap = 2, 5, 0.1
