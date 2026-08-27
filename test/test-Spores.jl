@@ -158,6 +158,25 @@ end
         @test weights[2] ≈ x_2_val / x_2_ub
     end
 
+    @testset "Test Spores_update! skips (does not throw on) a zero-upper-bound variable" begin
+        optimizer = Ipopt.Optimizer
+        model = JuMP.Model(optimizer)
+
+        @variable(model, 0 ≤ x_1 ≤ 0)  # zero upper bound: no scoring freedom
+        @variable(model, 0 ≤ x_2 ≤ 4)
+        @objective(model, Max, x_2)
+        JuMP.optimize!(model)
+        x_2_val = value(x_2)
+        x_2_ub = upper_bound(x_2)
+
+        weights = [0.5, 0.0]
+        Spores_update!(model, [x_1, x_2]; weights = weights)
+
+        # x_1's weight is left untouched (skipped), x_2's is scored normally.
+        @test weights[1] == 0.5
+        @test weights[2] ≈ x_2_val / x_2_ub
+    end
+
     @testset "Test Spores weights are cumulative on update" begin
         optimizer = Ipopt.Optimizer
         model = JuMP.Model(optimizer)

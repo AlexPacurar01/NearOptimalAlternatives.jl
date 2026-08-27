@@ -63,6 +63,33 @@ end
     end
 end
 
+@testset "Arclength: internal predictor-corrector loop" begin
+    @testset "a failed midpoint solve is marched past, not fatal" begin
+        # Directly drives `_arclength_sample` with a fake `solve_and_record` so
+        # the failure is deterministic: both endpoints succeed (the loop only
+        # starts if `ok_lo && ok_hi`), then the very first midpoint attempt
+        # fails once, exercising the "march past it" fallback (as opposed to
+        # `generate_alternatives_arclength!`'s own not-solved path, covered by
+        # the reconfigure_solver! test below, which only ever fails *after*
+        # both endpoints - never reaching this branch).
+        n_calls = Ref(0)
+        failed_once = Ref(false)
+        fake_solve = function (g)
+            n_calls[] += 1
+            if n_calls[] == 3
+                failed_once[] = true
+                return (false, NaN, NaN)
+            end
+            return (true, g, -g)
+        end
+
+        NearOptimalAlternatives._arclength_sample(fake_solve, 1.0, 4)
+
+        @test failed_once[]
+        @test n_calls[] == 5   # 2 endpoints + 1 failed + 2 successful midpoints
+    end
+end
+
 @testset "Arclength: reconfigure_solver! and its restore closure" begin
     @testset "reconfigure_solver! fires once per direction; restore fires between directions" begin
         model, inv = build_synth_arc()
