@@ -27,36 +27,7 @@ julia> using NearOptimalAlternatives
 
 Given a solved JuMP model `model` and the variables you want to consider, choose one of the four functions below depending on how you want alternatives to be generated. All of them return an `AlternativeSolutions`; see [Output](@ref io-output) for its structure.
 
-### Which function should I use?
-
-![Decision flowchart for choosing which function to call](assets/decision_flowchart.png)
-
-**When "metaheuristic" is the right branch, and when it isn't.** Reach for
-`generate_alternatives_metaheuristics`/`PSOGA` when your model doesn't have a solver suited to many
-repeated exact re-solves (e.g. a black-box or highly nonconvex model where an LP/QP-style optimization
-pass isn't available or affordable), or when you specifically want a population-based search that
-explores differently from a sequence of directed re-solves. Otherwise, prefer the optimization-based
-branch: it is exact, deterministic (given the same solver/settings), and — for models like typical energy
-system models, which are usually LPs or convex QPs with plenty of equality constraints (e.g. demand
-balance) — considerably cheaper and more reliable, since population-based metaheuristics do not natively
-enforce equality constraints and can spend most of their search on infeasible or near-infeasible
-individuals (this package's own `PSOGA` inherits that same limitation; see
-[PSOGA](@ref psoga-recommendations) below and
-[issue #19](https://github.com/TulipaEnergy/NearOptimalAlternatives.jl/issues/19)). If you do go the
-metaheuristic route, [Recommended algorithms](@ref metaheuristic-recommendations) below gives concrete
-starting points instead of the full
-[Metaheuristics.jl](https://jmejia8.github.io/Metaheuristics.jl/stable/algorithms/) list.
-
-See [Alternative-Generation Strategies](@ref gen-strategies) for the theory behind the three optimization-based functions, and [Modeling Methods](@ref modeling-methods) for the `modeling_method` each of them also accepts (independently of the choices above). The table below summarises when to prefer each, since the chart above is clear on *what* you can choose but not on *why* one beats another for your situation:
-
-| Function | Points returned | Prefer it when… | Main limitation | Cost per direction |
-| :------- | :--------------- | :--------------- | :--------------- | :------------------ |
-| `generate_alternatives_optimization!` | 1 per direction | you just want `n_alternatives` distinct options, nothing more | no visibility into the trade-off *within* a direction — only the full-budget corner | 1 solve |
-| `generate_alternatives_sweep!` | `n_budget` per direction, evenly spaced **in cost** | you want the full cost/diversity trade-off and the front is expected to be roughly straight, or you don't want arclength's small predictor-corrector overhead | wastes points on flat stretches, under-samples sharp bends; no built-in solver-warm-start hook (use `warm_start=true` instead, see below) | `n_budget` solves |
-| `generate_alternatives_arclength!` | `n_budget` per direction, evenly spaced **along the curve** | the front likely has a knee/bend and you want points concentrated there, not wasted on flat regions; or you want `reconfigure_solver!`-based warm-starting (Section~[Arclength Continuation](@ref arclength-continuation)) | a few extra solves beyond `n_budget` from rejected predictor steps; realised point count per direction can vary slightly | ≈`n_budget` solves + occasional rejected retries |
-| `generate_alternatives_metaheuristics` / `PSOGA` | `n_alternatives` total | no suitable exact solver is available, or you want population-based exploration on purpose | stochastic and approximate — no feasibility/exactness guarantee; struggles on equality-heavy models (see above) | population size × iterations (set by you; typically far more model solves/evaluations than one LP re-solve) |
-
-Cost here means LP/QP re-solves for the optimization-based rows, and objective/constraint evaluations for the metaheuristic row — the two are not directly comparable operation-for-operation, but the metaheuristic row is almost always the more expensive one in wall-clock time for a model where an exact re-solve is available at all.
+Not sure yet which function, which `modeling_method`, or how many alternatives/directions to ask for? See [Choosing What to Use](@ref choosing) first — this section assumes you've already decided and walks through calling each function.
 
 ### A minimal worked example
 
@@ -148,6 +119,21 @@ On this two-variable example the trade-off curve is a straight line, so the arcl
 
 ### Using a metaheuristic algorithm: `generate_alternatives_metaheuristics`
 
+!!! warning "None of these algorithms natively handle equality constraints"
+    Every algorithm usable here — every algorithm from Metaheuristics.jl, and this package's own `PSOGA`
+    — shares the same structural limitation: none of them natively handle equality constraints (like the
+    demand-balance constraint in every example on this page). They only know your model through the
+    objective and a *constraint-violation* value computed at each candidate point (`sum_violations` in
+    Metaheuristics.jl's own solution type), and prefer whichever candidate violates it least — there is no
+    repair or projection step that snaps a candidate back onto the equality surface for any algorithm,
+    general or `PSOGA` alike (`PSOGA`'s own selection rule, `is_better_psoga`, reads this exact same field).
+    A population-based search that must satisfy an equality exactly has very little of the search space to
+    work with, so expect noticeably more constraint violation, and a slower/less complete near-optimal
+    region, than the optimization-based functions above return exactly. See
+    [Recommended algorithms](@ref metaheuristic-recommendations) and
+    [Using PSOGA](@ref psoga-recommendations) below for what to do about it, and try the optimization-based
+    functions first if a MathOptInterface-compatible solver is available for your model at all.
+
 Generate alternatives with an algorithm from [Metaheuristics.jl](https://github.com/jmejia8/Metaheuristics.jl) instead of mathematical optimization:
 
 ```@example basic
@@ -183,7 +169,7 @@ The parameters of `metaheuristic_algorithm` are set when constructing it; see th
 
 #### [Recommended algorithms](@id metaheuristic-recommendations)
 
-Not every algorithm in Metaheuristics.jl is a good fit for an energy system model. **None of them natively handle equality constraints** (like the demand-balance constraint in every example on this page) — they only know your model through the objective and constraint-violation values `generate_alternatives_metaheuristics` computes at each candidate point, and a population-based search that must satisfy an equality exactly has very little of the search space to work with. Expect noticeably more constraint violation, and a slower/less complete near-optimal region, than the optimization-based functions above return exactly. Two reasonably robust, general-purpose starting points for continuous, box-constrained problems like this one:
+Not every algorithm in Metaheuristics.jl is an equally good fit for an energy system model (see the warning above for why all of them struggle with equality constraints to begin with). Two reasonably robust, general-purpose starting points for continuous, box-constrained problems like this one:
 
 - `Metaheuristics.DE()` (Differential Evolution) — a solid default for continuous real-parameter problems, few parameters to tune.
 - `Metaheuristics.PSO()` (Particle Swarm Optimization, used in the example above) — similarly robust, tends to converge faster on smoother objectives but can lose diversity earlier.
@@ -200,7 +186,7 @@ alternatives = generate_alternatives_metaheuristics(model, optimality_gap, n_alt
 ```
 
 !!! warning "Known limitation: is PSOGA ready to use?"
-    `PSOGA` is not yet fully ready for models with tight equality constraints — the same limitation as the general Metaheuristics.jl algorithms above, but sharper, since PSOGA's only defense against infeasibility today is preferring whichever individual has the smallest constraint violation ([issue #19](https://github.com/TulipaEnergy/NearOptimalAlternatives.jl/issues/19)); there is no repair or projection step yet. It has also not been benchmarked on problems larger than the small examples in this documentation ([issue #21](https://github.com/TulipaEnergy/NearOptimalAlternatives.jl/issues/21)), so treat its performance on a full-size energy system model as unverified rather than assumed. Use it for smaller or more loosely-constrained models today, and check those issues for progress before relying on it at scale.
+    Beyond the equality-constraint limitation shared by every algorithm here (see the warning at the top of this section), `PSOGA` specifically has not been benchmarked on problems larger than the small examples in this documentation ([issue #21](https://github.com/TulipaEnergy/NearOptimalAlternatives.jl/issues/21)), so treat its performance on a full-size energy system model as unverified rather than assumed. There is also an open issue tracking a possible repair/projection step to handle equality constraints better than the shared violation-preference approach ([issue #19](https://github.com/TulipaEnergy/NearOptimalAlternatives.jl/issues/19)). Use it for smaller or more loosely-constrained models today, and check those issues for progress before relying on it at scale.
 
 ## [Warm-starting a direction with `reconfigure_solver!`](@id warm-start-tutorial)
 
