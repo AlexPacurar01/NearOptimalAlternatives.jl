@@ -1,0 +1,2 @@
+method,solver,n_alt,eps,base_solve_s,mga_total_s,base_cost,julia,noa_version
+Min_Max_Variables,highs,4,0.2,41.74,9.04,2.4230533471684098e8,1.11.5,0.1.1

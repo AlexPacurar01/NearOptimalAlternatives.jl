@@ -21,3 +21,6 @@ env
 
 # Local test/input datasets (not needed in the repo)
 data/
+
+# Paper case-study inputs (Norse with investment limits) are tracked on purpose
+!paper/data/
