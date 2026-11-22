@@ -73,6 +73,11 @@ function create_alternative_generating_problem!(
 
     f(model, variables, fixed_variables; weights = weights, metric = metric)
 
+    # Keep the original objective so the cost of each alternative can be reported in
+    # full: JuMP moves a constant term of `old_objective` into the constraint's set, so
+    # `value(original_objective)` alone would miss it (see `original_objective_value`).
+    model.ext[:noa_original_objective] = old_objective
+
     @info "Adding the old objective function as a constraint to the model"
     # Constraint ensuring maximum difference in objective value to optimal solution. The sign of `optimal_value` is used to ensure that a negative `optimal_value` does not lead to an infeasible bound requiring a better than optimal solution.
     if old_objective_sense == MAX_SENSE

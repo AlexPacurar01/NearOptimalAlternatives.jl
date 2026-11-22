@@ -54,4 +54,27 @@
                   isapprox(results.objective_values[1], 2.0)
               )
     end
+    @testset "Reported cost includes a constant term of the original objective." begin
+        model = JuMP.Model(Ipopt.Optimizer)
+        set_silent(model)
+        @variable(model, 0 ≤ x_1 ≤ 10)
+        @variable(model, 0 ≤ x_2 ≤ 10)
+        # The constant 100 is moved into the budget constraint's set by JuMP.
+        @objective(model, Min, 2x_1 + 3x_2 + 100)
+        @constraint(model, x_1 + x_2 ≥ 5)
+        JuMP.optimize!(model)
+        @test isapprox(objective_value(model), 110; atol = 1e-6)
+
+        results = NearOptimalAlternatives.generate_alternatives_optimization!(
+            model,
+            0.1,
+            all_variables(model),
+            1;
+            modeling_method = :HSJ,
+        )
+        sol = results.solutions[1]
+        cost = 2 * sol[x_1] + 3 * sol[x_2] + 100
+        @test isapprox(results.objective_values[1], cost; atol = 1e-5)
+        @test results.objective_values[1] ≤ 1.1 * 110 + 1e-5
+    end
 end

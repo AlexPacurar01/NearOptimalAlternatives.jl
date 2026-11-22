@@ -1,0 +1,16 @@
+technology,optimum_GW,alt1_minus_optimum_GW,alt2_minus_optimum_GW,alt3_minus_optimum_GW
+"Valhalla H2 storage",27.2643,-23.1154,-23.1154,-23.1154
+"Asgard solar",25.2975,-20.0041,-20.5596,-20.0040
+"Midgard nuclear SMR",15.4348,18.3225,18.4691,18.3225
+"Valhalla H2 generator",15.8623,-15.8623,-15.1130,-15.8623
+"Line Asgard–Midgard",8.1711,12.1858,12.3325,12.1858
+"Valhalla fuel cell",13.2593,-11.5577,-11.5577,-11.5577
+"Line Asgard–Valhalla",8.5263,-8.5263,-8.5263,-8.5263
+"Midgard wind",14.7025,-8.2030,-8.2030,-8.2030
+"Asgard battery",6.5911,-4.0859,-4.2325,-4.0859
+"Line Midgard–Valhalla",2.9661,-2.9266,-2.9266,-2.9266
+"Valhalla GT",0.0000,1.2236,0.0000,1.2233
+"Valhalla electrolyser",0.0000,0.6408,0.0000,0.6409
+"Midgard PHS",0.1374,0.3626,0.3626,0.3626
+"Valhalla heat pump",3.2440,-0.2796,-0.2796,-0.2796
+"Asgard CCGT",41.2500,0.0000,0.0000,0.0000

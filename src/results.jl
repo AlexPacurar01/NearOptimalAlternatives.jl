@@ -42,7 +42,21 @@ function update_solutions!(results::AlternativeSolutions, model::JuMP.Model)
             ),
         )
     end
-    push!(results.objective_values, value(original_objective))
+    push!(results.objective_values, original_objective_value(model))
+end
+
+"""
+    original_objective_value(model::JuMP.Model)
+
+Value of the model's original objective (including any constant term) at the current
+solution. Falls back to the value of the `original_objective` budget constraint's function,
+which excludes a constant term, for models prepared without
+`create_alternative_generating_problem!`.
+"""
+function original_objective_value(model::JuMP.Model)
+    f = get(model.ext, :noa_original_objective, nothing)
+    f === nothing || return value(f)
+    return value(constraint_by_name(model, "original_objective"))
 end
 
 """

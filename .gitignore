@@ -21,3 +21,8 @@ env
 
 # Local test/input datasets (not needed in the repo)
 data/
+
+# Paper case study (script, inputs, environment, results) is tracked on purpose
+!paper/data/
+!paper/Manifest.toml
+!paper/results/**/*.tex
