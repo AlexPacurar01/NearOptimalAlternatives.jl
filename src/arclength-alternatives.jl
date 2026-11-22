@@ -140,6 +140,10 @@ function generate_alternatives_arclength!(
                 return (false, NaN, NaN)
             end
             div = objective_value(model)
+            # Cost of this point in the original objective, constant term included. Not
+            # `value(bud)`: JuMP keeps the objective's constant in the budget's
+            # right-hand side (it is `offset` above), so the budget's value would be
+            # too low by that constant. See `original_objective_value`.
             cost = original_objective_value(model)
             update_solutions!(result, model)
             placed[] += 1

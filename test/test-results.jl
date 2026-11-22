@@ -59,7 +59,10 @@
         set_silent(model)
         @variable(model, 0 ≤ x_1 ≤ 10)
         @variable(model, 0 ≤ x_2 ≤ 10)
-        # The constant 100 is moved into the budget constraint's set by JuMP.
+        # The constant 100 is what this test is about. When the objective becomes the
+        # budget constraint, JuMP moves the constant to the right-hand side, so the
+        # constraint's value is 100 below the true cost. The reported cost must be
+        # computed from the full objective instead (see `original_objective_value`).
         @objective(model, Min, 2x_1 + 3x_2 + 100)
         @constraint(model, x_1 + x_2 ≥ 5)
         JuMP.optimize!(model)

@@ -73,9 +73,20 @@ function create_alternative_generating_problem!(
 
     f(model, variables, fixed_variables; weights = weights, metric = metric)
 
-    # Keep the original objective so the cost of each alternative can be reported in
-    # full: JuMP moves a constant term of `old_objective` into the constraint's set, so
-    # `value(original_objective)` alone would miss it (see `original_objective_value`).
+    # Store the original objective, constant term included, so the cost of every
+    # alternative can be reported on the same scale as `optimal_value`.
+    #
+    # Why this is needed: JuMP normalises a constraint by moving every constant to the
+    # right-hand side. For an objective `2x + 3y + 100` and a budget of 121, the
+    # constraint added below is stored as `2x + 3y ≤ 21`. The budget is therefore still
+    # enforced correctly, but `value(original_objective)` returns `2x + 3y` and misses the
+    # constant. Reporting that value would make every alternative look cheaper than it is
+    # by exactly the constant, while `optimal_value` includes it, so cost ratios between
+    # alternatives and the optimum would be wrong. Models built with an energy-system
+    # framework often have such a constant (e.g. fixed costs of existing assets).
+    #
+    # `original_objective_value` reads this entry. The key is namespaced to avoid
+    # clashing with other packages that use `model.ext`.
     model.ext[:noa_original_objective] = old_objective
 
     @info "Adding the old objective function as a constraint to the model"

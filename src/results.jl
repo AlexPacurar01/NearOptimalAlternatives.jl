@@ -33,7 +33,10 @@ function update_solutions!(results::AlternativeSolutions, model::JuMP.Model)
     end
     push!(results.solutions, solution)
 
-    # Retrieve constraint for maximum difference to original objective and compute original objective value.
+    # The `original_objective` budget constraint must exist: it marks a model prepared for
+    # generating alternatives. The cost itself is not read from this constraint, because
+    # its value excludes any constant term of the objective (see
+    # `original_objective_value` for why).
     original_objective = constraint_by_name(model, "original_objective")
     if isnothing(original_objective)
         throw(
@@ -48,10 +51,35 @@ end
 """
     original_objective_value(model::JuMP.Model)
 
-Value of the model's original objective (including any constant term) at the current
-solution. Falls back to the value of the `original_objective` budget constraint's function,
-which excludes a constant term, for models prepared without
-`create_alternative_generating_problem!`.
+Return the value of the model's original objective at the current solution, including
+any constant term. This is the cost stored in `AlternativeSolutions.objective_values`.
+
+# Why the budget constraint's value is not used
+
+When alternatives are generated, the original objective becomes the budget constraint
+`original_objective`, and the model's objective is replaced by a diversity objective.
+The cost of an alternative then has to be recovered from the original objective.
+
+The obvious way, `value(constraint_by_name(model, "original_objective"))`, gives the
+wrong number when the objective has a constant term. JuMP stores every constraint with
+the constants moved to the right-hand side, and the value of a constraint is the value
+of its left-hand side only. For the objective `2x + 3y + 100`, the constraint holds
+`2x + 3y`, so its value is 100 lower than the true cost. The budget itself is still
+enforced correctly, since the constant was subtracted from the bound as well.
+
+The optimum's cost, `objective_value(model)` before alternatives are generated, does
+include the constant. Using the constraint's value would put the optimum and its
+alternatives on different scales. For example, an alternative exactly on a 20% budget
+would appear to cost less than 1.2 times the optimum.
+
+[`create_alternative_generating_problem!`](@ref) therefore stores the full original
+objective in `model.ext[:noa_original_objective]`, and this function evaluates it.
+
+# Fallback
+
+A model whose budget constraint was built some other way has no stored objective. For
+such a model this function falls back to the constraint's value, which is the previous
+behaviour and is exact when the objective has no constant term.
 """
 function original_objective_value(model::JuMP.Model)
     f = get(model.ext, :noa_original_objective, nothing)
