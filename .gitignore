@@ -24,3 +24,5 @@ data/
 
 # Paper case-study inputs (Norse with investment limits) are tracked on purpose
 !paper/data/
+!paper/Manifest.toml
+!paper/results/**/*.tex

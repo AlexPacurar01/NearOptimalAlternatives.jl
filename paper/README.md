@@ -1,47 +1,82 @@
-# Paper case study: Norse with Max-Distance
+# Paper case study: near-optimal alternatives for Norse
 
 Reproducible script and data behind Section 3.3 of the NearOptimalAlternatives.jl
-(NOA) SoftwareX manuscript: four Max-Distance alternatives on the Norse example
-system of TulipaEnergyModel.jl, and the technology trade-offs they show.
+(NOA) SoftwareX manuscript: three SPORES alternatives for the Norse example
+system of TulipaEnergyModel.jl within a 20% cost slack, and how they differ
+from the cost-optimal design and from each other.
 
 ## Contents
 
 | Path | What it is |
 | :--- | :--- |
-| `norse_max_distance.jl` | The experiment. One NOA call, then tables and a figure. |
+| `norse_mga.jl` | The experiment. One NOA call, then tables and a figure. |
+| `FINDINGS.md` | What the runs show, problems found on the way, and how they were fixed. |
+| `results/norse_hsj/` | The same run with HSJ, used for the comparison in the paper. |
 | `data/Norse/` | Norse inputs from TulipaEnergyModel.jl v0.22.2 (`test/inputs/Norse`), with investment limits added (see below). |
-| `results/norse_max_distance/` | Output of the run reported in the paper: `alternatives.csv`, `distances.csv`, `summary.csv`, `table.tex`, `bandwidth.png`. |
+| `results/norse_spores/` | Output of the run reported in the paper (see below). |
 | `Project.toml` / `Manifest.toml` | The exact Julia environment used. |
+
+The results folder holds:
+
+| File | Content |
+| :--- | :--- |
+| `alternatives.csv` | Installed capacity (GW) per technology for the optimum and each alternative, plus costs. |
+| `change_vs_optimum.csv` | Each alternative minus the optimum, per technology (GW). |
+| `distances.csv` | Euclidean distances (GW) between the optimum and the alternatives, all pairs. |
+| `summary.csv` | Method, settings, run times, package versions. |
+| `table.tex`, `distances.tex` | The same as LaTeX tables. |
+| `alternatives.png`, `alternatives.pdf` | Dot plot of the optimum and the alternatives per technology. |
 
 ## Data change
 
-The Norse case shipped with TulipaEnergyModel.jl has no `investment_limit` on
-most investable assets. Max-Distance then spends the whole cost budget on the
-one technology whose capacity is unbounded (hydrogen storage, which has a
-near-zero investment cost), which says nothing about the system. In
-`data/Norse/asset-commission.csv` and `data/Norse/flow-commission.csv` every
-investable asset and transport flow therefore gets an `investment_limit` of
-ten times its cost-optimal investment. Nothing else is changed; `diff -r`
-against the Tulipa copy shows exactly these cells.
+SPORES scores each decision by how close it is to its upper bound, so every
+decision needs a finite bound. Several investable assets and transport lines in
+the Norse case shipped with TulipaEnergyModel.jl have no `investment_limit`. In
+`data/Norse/asset-commission.csv` and `data/Norse/flow-commission.csv` each of
+them gets one of ten times its cost-optimal investment. The two CCGTs get
+412.5 GW and the electrolyser 100 GW, since the CCGT in Midgard and the
+electrolyser are not built at the optimum. Wind, solar, battery, pumped hydro
+and the gas turbine keep Tulipa's original limits. Nothing else is changed;
+`diff -r` against the Tulipa copy shows exactly these cells.
+
+## Units: why the script works in GW
+
+Tulipa's investment variables count units, and unit sizes in Norse range from
+3 MW (a wind turbine) to 1000 MW (a transmission line). Methods that weight the
+decision variables, such as SPORES and HSJ, depend on that choice. On unit
+counts, SPORES penalises a GW of wind about 90 times harder than a GW of nuclear,
+and wind makes up over 80% of its first objective, so every alternative simply
+drops wind and the alternatives end up within a few GW of each other. The script
+therefore adds one bounded variable per decision holding its capacity in GW and
+hands those to NOA:
+
+```julia
+@variable(model, 0 <= cap_gw[i = 1:n] <= upper_bound(units[i]) * gw[i])
+@constraint(model, [i = 1:n], cap_gw[i] == gw[i] * units[i])
+```
+
+Set `NOA_SPACE=units` to reproduce the unit-count behaviour.
 
 ## Running it
 
 From the repository root:
 
 ```sh
-julia --project=paper -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
-julia --project=paper paper/norse_max_distance.jl
+julia --project=paper -e 'using Pkg; Pkg.instantiate()'
+julia --project=paper paper/norse_mga.jl
 ```
 
-Max-Distance maximises a convex quadratic (the squared distance to the previous
-solutions) over the near-optimal polytope. That is a nonconvex QP, so it needs a
-solver with global nonconvex support. The script uses the open-source SCIP by
-default; set `NOA_SOLVER=gurobi` to use Gurobi (NonConvex=2) instead. HiGHS
-rejects the problem ("Cannot solve non-convex QP problems with HiGHS") and
-Ipopt, a local NLP solver, does not converge on it at this size. All the other
-NOA methods (HSJ, SPORES, Min/Max, Random Vector, DWV) are linear and run with
-HiGHS.
+The base solve takes about 30 seconds and the three alternatives under 10
+seconds with HiGHS on a laptop.
 
-Other knobs (environment variables): `NOA_N_ALT` (default 4), `NOA_EPS`
-(default 0.1), `NOA_NORSE` (input folder), `NOA_OUT` (output folder),
-`NOA_TIME` (per-solve time limit in seconds, default 1800).
+Other knobs (environment variables): `NOA_METHOD` (default `Spores`; also `HSJ`,
+`Min_Max_Variables`, `Random_Vector`, `Directionally_Weighted_Variables`,
+`Max_Distance`), `NOA_N_ALT` (default 3), `NOA_EPS` (default 0.2), `NOA_SPACE`
+(`gw` or `units`), `NOA_NORSE` (input folder), `NOA_OUT` (output folder),
+`NOA_TIME` (per-solve time limit in seconds).
+
+`Max_Distance` maximises a convex quadratic, the squared distance to earlier
+solutions, which makes it a nonconvex QP. HiGHS rejects it and Ipopt does not
+converge on it at this size. Run it with `NOA_SOLVER=scip` or
+`NOA_SOLVER=gurobi` after adding that solver package to the environment. All
+other methods are linear and run with HiGHS.

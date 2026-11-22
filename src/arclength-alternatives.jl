@@ -145,7 +145,7 @@ function generate_alternatives_arclength!(
                 return (false, NaN, NaN)
             end
             div = objective_value(model)
-            cost = value(bud)
+            cost = original_objective_value(model)
             update_solutions!(result, model)
             placed[] += 1
             st = _safe_solve_time(model)
