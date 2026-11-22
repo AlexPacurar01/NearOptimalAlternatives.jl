@@ -118,8 +118,8 @@ instead of 1.200. The budget itself was always enforced correctly.
 Fix in the package: NOA now stores the original objective when it builds the
 budget constraint and evaluates it for each alternative. This is applied in
 `generate_alternatives_optimization!`, the sweep and the arclength generators. A
-regression test with a constant term is in `test/test-results.jl`. The affected
-test files pass: 132 tests.
+regression test with a constant term is in `test/test-results.jl`. The full
+test suite passes on the `upstream-clean` branch: 231 tests.
 
 ### Max-Distance needs a nonconvex solver
 
