@@ -13,7 +13,8 @@ from the cost-optimal design and from each other.
 | `FINDINGS.md` | What the runs show, problems found on the way, and how they were fixed. |
 | `results/norse_hsj/` | The same run with HSJ, used for the comparison in the paper. |
 | `data/Norse/` | Norse inputs from TulipaEnergyModel.jl v0.22.2 (`test/inputs/Norse`), with investment limits added (see below). |
-| `results/norse_spores/` | Output of the run reported in the paper (see below). |
+| `results/norse_spores/` | Tables and data of the run reported in the paper (see below). |
+| `figures/` | Figures for the manuscript: `norse_spores.png`/`.pdf` (the paper's figure) and `norse_hsj.png`/`.pdf`. |
 | `Project.toml` / `Manifest.toml` | The exact Julia environment used. |
 
 The results folder holds:
@@ -25,7 +26,6 @@ The results folder holds:
 | `distances.csv` | Euclidean distances (GW) between the optimum and the alternatives, all pairs. |
 | `summary.csv` | Method, settings, run times, package versions. |
 | `table.tex`, `distances.tex` | The same as LaTeX tables. |
-| `alternatives.png`, `alternatives.pdf` | Dot plot of the optimum and the alternatives per technology. |
 
 ## Data change
 

@@ -46,6 +46,7 @@
 #   NOA_NORSE    Norse input folder      (default paper/data/Norse)
 #   NOA_OUT      output directory        (default paper/results/norse_<method>[_units])
 #   NOA_TIME     per-solve time limit, s (default 1800)
+#   NOA_FIGDIR   figure directory        (default paper/figures; file named after NOA_OUT)
 #
 # Run from the repository root:
 #   julia --project=. paper/norse_mga.jl
@@ -68,8 +69,13 @@ const OUTDIR = env(
     joinpath(@__DIR__, "results", "norse_" * lowercase(string(METHOD)) * (SPACE == "units" ? "_units" : "")),
 )
 const TIME_LIMIT = parse(Float64, env("NOA_TIME", "1800"))
+# Figures go to paper/figures/, named after the run (e.g. norse_spores.png), so the
+# manuscript can include them from one place; tables and data stay in OUTDIR.
+const FIGDIR = env("NOA_FIGDIR", joinpath(@__DIR__, "figures"))
+const FIGNAME = basename(OUTDIR)
 SPACE in ("gw", "units") || error("NOA_SPACE must be 'gw' or 'units', got '$SPACE'")
 mkpath(OUTDIR)
+mkpath(FIGDIR)
 global_logger(ConsoleLogger(stderr, Logging.Warn))   # silence NOA's per-step @info
 
 # --- solver ----------------------------------------------------------------
@@ -311,9 +317,9 @@ try
     end
     scatter!(plt, X[rows, 1], 1:nrow; color = "#0b0b0b", marker = :diamond, ms = 7,
              markerstrokecolor = :white, markerstrokewidth = 1, label = "Cost optimum")
-    savefig(plt, joinpath(OUTDIR, "alternatives.png"))
-    savefig(plt, joinpath(OUTDIR, "alternatives.pdf"))
-    println("figure -> ", joinpath(OUTDIR, "alternatives.png"), "  (unchanged, not drawn: ",
+    savefig(plt, joinpath(FIGDIR, FIGNAME * ".png"))
+    savefig(plt, joinpath(FIGDIR, FIGNAME * ".pdf"))
+    println("figure -> ", joinpath(FIGDIR, FIGNAME * ".png"), "  (unchanged, not drawn: ",
             join(labels[setdiff(order, rows)], ", "), ")")
 catch e
     @warn "figure skipped" exception = (e, catch_backtrace())
