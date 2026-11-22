@@ -66,7 +66,11 @@ const EPS = parse(Float64, env("NOA_EPS", "0.2"))
 const NORSE = env("NOA_NORSE", joinpath(@__DIR__, "data", "Norse"))
 const OUTDIR = env(
     "NOA_OUT",
-    joinpath(@__DIR__, "results", "norse_" * lowercase(string(METHOD)) * (SPACE == "units" ? "_units" : "")),
+    joinpath(
+        @__DIR__,
+        "results",
+        "norse_" * lowercase(string(METHOD)) * (SPACE == "units" ? "_units" : ""),
+    ),
 )
 const TIME_LIMIT = parse(Float64, env("NOA_TIME", "1800"))
 # Figures go to paper/figures/, named after the run (e.g. norse_spores.png), so the
@@ -79,11 +83,16 @@ mkpath(FIGDIR)
 global_logger(ConsoleLogger(stderr, Logging.Warn))   # silence NOA's per-step @info
 
 # --- solver ----------------------------------------------------------------
-METHOD == :Max_Distance && SOLVER == "highs" &&
+METHOD == :Max_Distance &&
+    SOLVER == "highs" &&
     error("Max_Distance is a nonconvex QP; set NOA_SOLVER=scip or NOA_SOLVER=gurobi")
 if SOLVER == "highs"
     @eval using HiGHS
-    optimizer() = optimizer_with_attributes(HiGHS.Optimizer, "output_flag" => false, "time_limit" => TIME_LIMIT)
+    optimizer() = optimizer_with_attributes(
+        HiGHS.Optimizer,
+        "output_flag" => false,
+        "time_limit" => TIME_LIMIT,
+    )
 elseif SOLVER == "gurobi"
     @eval using Gurobi
     optimizer() = optimizer_with_attributes(
@@ -109,7 +118,10 @@ end
 "Readable name: `Midgard_Nuclear_SMR` -> `Midgard nuclear SMR`, flows -> `Line Asgard–Midgard`."
 function pretty(asset::AbstractString)
     region, tech = split(asset, "_"; limit = 2)
-    words = [all(isuppercase, w) || occursin(r"\d", w) ? w : lowercase(w) for w in split(tech, "_")]
+    words = [
+        all(isuppercase, w) || occursin(r"\d", w) ? w : lowercase(w) for
+        w in split(tech, "_")
+    ]
     return region * " " * join(words, " ")
 end
 pretty(from::AbstractString, to::AbstractString) =
@@ -138,8 +150,11 @@ function load_norse()
     for r in DBInterface.execute(con, "SELECT asset, capacity FROM asset")
         mw[r.asset] = r.capacity
     end
-    for r in DBInterface.execute(con, "SELECT from_asset, to_asset, capacity FROM flow WHERE is_transport")
-        mw[r.from_asset * "|" * r.to_asset] = r.capacity
+    for r in DBInterface.execute(
+        con,
+        "SELECT from_asset, to_asset, capacity FROM flow WHERE is_transport",
+    )
+        mw[r.from_asset*"|"*r.to_asset] = r.capacity
     end
 
     units, labels, gw_per_unit = VariableRef[], String[], Float64[]
@@ -160,18 +175,25 @@ function load_norse()
     return model, units, labels, gw_per_unit
 end
 
-println("[$(now())] Norse MGA: method=$METHOD space=$SPACE solver=$SOLVER n_alt=$N_ALT eps=$EPS data=$NORSE -> $OUTDIR")
+println(
+    "[$(now())] Norse MGA: method=$METHOD space=$SPACE solver=$SOLVER n_alt=$N_ALT eps=$EPS data=$NORSE -> $OUTDIR",
+)
 t0 = time()
 model, units, labels, gw = load_norse()
 base_time = time() - t0
 base_cost = objective_value(model)
 x0 = value.(units) .* gw                    # optimum, GW
-@printf("base solve: %.1fs, cost = %.6g, %d investment decisions\n", base_time, base_cost, length(units))
+@printf(
+    "base solve: %.1fs, cost = %.6g, %d investment decisions\n",
+    base_time,
+    base_cost,
+    length(units)
+)
 
 # --- diversity variables: capacity in GW (default) or Tulipa's unit counts ----
 if SPACE == "gw"
     n = length(units)
-    @variable(model, 0 <= cap_gw[i = 1:n] <= upper_bound(units[i]) * gw[i])
+    @variable(model, 0 <= cap_gw[i=1:n] <= upper_bound(units[i]) * gw[i])
     @constraint(model, [i = 1:n], cap_gw[i] == gw[i] * units[i])
     optimize!(model)                         # same optimum; gives cap_gw its values
     @assert is_solved_and_feasible(model)
@@ -193,11 +215,16 @@ res = generate_alternatives_optimization!(
     metric = metric,
 )
 mga_time = time() - t1
-@printf("%d alternatives in %.1fs (%.1fs per alternative)\n", length(res.solutions), mga_time, mga_time / length(res.solutions))
+@printf(
+    "%d alternatives in %.1fs (%.1fs per alternative)\n",
+    length(res.solutions),
+    mga_time,
+    mga_time / length(res.solutions)
+)
 
 # --- post-processing -----------------------------------------------------------
 X = hcat(x0, [[s[v] for v in units] .* gw for s in res.solutions]...)   # GW; columns: optimum, alt1..altN
-X[abs.(X).<5e-4] .= 0.0                                               # print solver noise (-0.00) as 0
+X[abs.(X) .< 5e-4] .= 0.0                                               # print solver noise (-0.00) as 0
 ncol = size(X, 2)
 colnames = ["optimum"; ["alt$i" for i = 1:N_ALT]]
 costs = [base_cost; res.objective_values]
@@ -209,28 +236,51 @@ order = sort(built; by = i -> -maximum(abs.(X[i, 2:end] .- X[i, 1])))  # largest
 open(joinpath(OUTDIR, "alternatives.csv"), "w") do io
     println(io, "technology,gw_per_unit," * join(colnames .* "_GW", ","))
     for i in eachindex(labels)
-        println(io, "\"$(labels[i])\",$(gw[i])," * join([@sprintf("%.4f", X[i, c]) for c = 1:ncol], ","))
+        println(
+            io,
+            "\"$(labels[i])\",$(gw[i])," *
+            join([@sprintf("%.4f", X[i, c]) for c = 1:ncol], ","),
+        )
     end
     println(io, "\"total cost\",," * join([@sprintf("%.6e", c) for c in costs], ","))
-    println(io, "\"cost / optimum\",," * join([@sprintf("%.5f", c / base_cost) for c in costs], ","))
+    println(
+        io,
+        "\"cost / optimum\",," *
+        join([@sprintf("%.5f", c / base_cost) for c in costs], ","),
+    )
 end
 open(joinpath(OUTDIR, "change_vs_optimum.csv"), "w") do io
-    println(io, "technology,optimum_GW," * join(["alt$(i)_minus_optimum_GW" for i = 1:N_ALT], ","))
+    println(
+        io,
+        "technology,optimum_GW," * join(["alt$(i)_minus_optimum_GW" for i = 1:N_ALT], ","),
+    )
     for i in order
-        println(io, "\"$(labels[i])\",$(@sprintf("%.4f", X[i, 1]))," *
-                    join([@sprintf("%.4f", X[i, c] - X[i, 1]) for c = 2:ncol], ","))
+        println(
+            io,
+            "\"$(labels[i])\",$(@sprintf("%.4f", X[i, 1]))," *
+            join([@sprintf("%.4f", X[i, c] - X[i, 1]) for c = 2:ncol], ","),
+        )
     end
 end
 open(joinpath(OUTDIR, "distances.csv"), "w") do io
     println(io, "," * join(colnames, ","))
     for a = 1:ncol
-        println(io, colnames[a] * "," * join([@sprintf("%.3f", D[a, b]) for b = 1:ncol], ","))
+        println(
+            io,
+            colnames[a] * "," * join([@sprintf("%.3f", D[a, b]) for b = 1:ncol], ","),
+        )
     end
 end
 open(joinpath(OUTDIR, "summary.csv"), "w") do io
-    println(io, "method,space,solver,n_alt,eps,base_solve_s,mga_total_s,base_cost,julia,noa_version")
-    println(io, "$METHOD,$SPACE,$SOLVER,$N_ALT,$EPS,$(round(base_time, digits = 2)),$(round(mga_time, digits = 2))," *
-                "$base_cost,$VERSION,$(pkgversion(NearOptimalAlternatives))")
+    println(
+        io,
+        "method,space,solver,n_alt,eps,base_solve_s,mga_total_s,base_cost,julia,noa_version",
+    )
+    println(
+        io,
+        "$METHOD,$SPACE,$SOLVER,$N_ALT,$EPS,$(round(base_time, digits = 2)),$(round(mga_time, digits = 2))," *
+        "$base_cost,$VERSION,$(pkgversion(NearOptimalAlternatives))",
+    )
 end
 
 # LaTeX table: capacities, then changes in brackets would clutter - keep capacity; changes in their own table
@@ -240,16 +290,40 @@ texdelta(x) = abs(x) < 0.05 ? "0.0" : (x > 0 ? "+" : "\$-\$") * @sprintf("%.1f",
 open(joinpath(OUTDIR, "table.tex"), "w") do io
     println(io, "\\begin{tabular}{l" * "r"^ncol * "}")
     println(io, "\\toprule")
-    println(io, "\\textbf{Installed capacity (GW)} & \\textbf{Optimum} & " *
-                join(["\\textbf{Alt.~$i}" for i = 1:N_ALT], " & ") * "\\\\")
+    println(
+        io,
+        "\\textbf{Installed capacity (GW)} & \\textbf{Optimum} & " *
+        join(["\\textbf{Alt.~$i}" for i = 1:N_ALT], " & ") *
+        "\\\\",
+    )
     println(io, "\\midrule")
     for i in order
-        println(io, texlab(labels[i]) * " & " * texnum(X[i, 1]) * " & " *
-                    join([texnum(X[i, c]) * " (" * texdelta(X[i, c] - X[i, 1]) * ")" for c = 2:ncol], " & ") * "\\\\")
+        println(
+            io,
+            texlab(labels[i]) *
+            " & " *
+            texnum(X[i, 1]) *
+            " & " *
+            join(
+                [texnum(X[i, c]) * " (" * texdelta(X[i, c] - X[i, 1]) * ")" for c = 2:ncol],
+                " & ",
+            ) *
+            "\\\\",
+        )
     end
     println(io, "\\midrule")
-    println(io, "Cost relative to optimum & " * join([@sprintf("%.2f", c / base_cost) for c in costs], " & ") * "\\\\")
-    println(io, "Distance to optimum (GW) & " * join([@sprintf("%.1f", D[1, c]) for c = 1:ncol], " & ") * "\\\\")
+    println(
+        io,
+        "Cost relative to optimum & " *
+        join([@sprintf("%.2f", c / base_cost) for c in costs], " & ") *
+        "\\\\",
+    )
+    println(
+        io,
+        "Distance to optimum (GW) & " *
+        join([@sprintf("%.1f", D[1, c]) for c = 1:ncol], " & ") *
+        "\\\\",
+    )
     println(io, "\\bottomrule")
     println(io, "\\end{tabular}")
 end
@@ -257,10 +331,19 @@ open(joinpath(OUTDIR, "distances.tex"), "w") do io
     hdr = ["Optimum"; ["Alt.~$i" for i = 1:N_ALT]]
     println(io, "\\begin{tabular}{l" * "r"^ncol * "}")
     println(io, "\\toprule")
-    println(io, "\\textbf{Distance (GW)} & " * join(["\\textbf{$h}" for h in hdr], " & ") * "\\\\")
+    println(
+        io,
+        "\\textbf{Distance (GW)} & " * join(["\\textbf{$h}" for h in hdr], " & ") * "\\\\",
+    )
     println(io, "\\midrule")
     for a = 1:ncol
-        println(io, hdr[a] * " & " * join([b < a ? "" : @sprintf("%.1f", D[a, b]) for b = 1:ncol], " & ") * "\\\\")
+        println(
+            io,
+            hdr[a] *
+            " & " *
+            join([b < a ? "" : @sprintf("%.1f", D[a, b]) for b = 1:ncol], " & ") *
+            "\\\\",
+        )
     end
     println(io, "\\bottomrule")
     println(io, "\\end{tabular}")
@@ -268,9 +351,19 @@ end
 
 # Console report
 fmt(x, d) = lpad(@sprintf("%.*f", d, x), 9)
-println("\n", rpad("installed capacity (GW)", 28), join(lpad.(colnames, 9)), "    change vs optimum")
+println(
+    "\n",
+    rpad("installed capacity (GW)", 28),
+    join(lpad.(colnames, 9)),
+    "    change vs optimum",
+)
 for i in order
-    println(rpad(labels[i], 28), join(fmt.(X[i, :], 2)), "   ", join(fmt.(X[i, 2:end] .- X[i, 1], 2)))
+    println(
+        rpad(labels[i], 28),
+        join(fmt.(X[i, :], 2)),
+        "   ",
+        join(fmt.(X[i, 2:end] .- X[i, 1], 2)),
+    )
 end
 isempty(never) || println("never built: ", join(labels[never], ", "))
 println(rpad("cost / optimum", 28), join(fmt.(costs ./ base_cost, 4)))
@@ -308,19 +401,48 @@ try
         foreground_color_legend = nothing,
     )
     for (k, i) in enumerate(rows)        # thin connector spanning optimum and all alternatives
-        plot!(plt, [minimum(X[i, :]), maximum(X[i, :])], [k, k]; color = "#c3c2b7", lw = 1.5, label = "")
+        plot!(
+            plt,
+            [minimum(X[i, :]), maximum(X[i, :])],
+            [k, k];
+            color = "#c3c2b7",
+            lw = 1.5,
+            label = "",
+        )
     end
     offs = range(-0.18, 0.18; length = N_ALT)
     for c = 2:ncol
-        scatter!(plt, X[rows, c], (1:nrow) .+ offs[c-1]; color = pal[c-1], ms = 6,
-                 markerstrokecolor = :white, markerstrokewidth = 1, label = "Alternative $(c-1)")
+        scatter!(
+            plt,
+            X[rows, c],
+            (1:nrow) .+ offs[c-1];
+            color = pal[c-1],
+            ms = 6,
+            markerstrokecolor = :white,
+            markerstrokewidth = 1,
+            label = "Alternative $(c-1)",
+        )
     end
-    scatter!(plt, X[rows, 1], 1:nrow; color = "#0b0b0b", marker = :diamond, ms = 7,
-             markerstrokecolor = :white, markerstrokewidth = 1, label = "Cost optimum")
+    scatter!(
+        plt,
+        X[rows, 1],
+        1:nrow;
+        color = "#0b0b0b",
+        marker = :diamond,
+        ms = 7,
+        markerstrokecolor = :white,
+        markerstrokewidth = 1,
+        label = "Cost optimum",
+    )
     savefig(plt, joinpath(FIGDIR, FIGNAME * ".png"))
     savefig(plt, joinpath(FIGDIR, FIGNAME * ".pdf"))
-    println("figure -> ", joinpath(FIGDIR, FIGNAME * ".png"), "  (unchanged, not drawn: ",
-            join(labels[setdiff(order, rows)], ", "), ")")
+    println(
+        "figure -> ",
+        joinpath(FIGDIR, FIGNAME * ".png"),
+        "  (unchanged, not drawn: ",
+        join(labels[setdiff(order, rows)], ", "),
+        ")",
+    )
 catch e
     @warn "figure skipped" exception = (e, catch_backtrace())
 end
